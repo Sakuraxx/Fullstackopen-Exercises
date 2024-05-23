@@ -1,0 +1,7 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    
+    Note right of browser: When the user types some words in the text field(like cactus) <br> and clicks the button to save it. <br/>The browser will render the new data locally <br> and only send a POST request to the server save the data.
