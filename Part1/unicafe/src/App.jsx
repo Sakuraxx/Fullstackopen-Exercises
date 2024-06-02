@@ -14,18 +14,22 @@ const Statistics = ({good, neutral, bad}) => {
   {
     return <p>No feedback given.</p>
   }
+
   return (
     <>
         <h1>statistics</h1>
-        <p>good: {good}</p>
-        <p>neutral: {neutral}</p>
-        <p>bad: {bad}</p>
-        <p>all: {total}</p>
-        <p>average score: {average}</p>
-        <p>positive: {positive}%</p>
+        <StatisticLine text="good" value={good}></StatisticLine>
+        <StatisticLine text="neutral" value={neutral}></StatisticLine>
+        <StatisticLine text="bad" value={bad}></StatisticLine>
+        <StatisticLine text="all" value={total}></StatisticLine>
+        <StatisticLine text="average score" value={average}></StatisticLine>
+        <StatisticLine text="positive" value={positive}></StatisticLine>
     </>
-
   )
+}
+
+const StatisticLine = ({text, value}) => {
+  return <p>{text}: {value}</p>
 }
 
 function App() {
