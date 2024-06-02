@@ -11,20 +11,54 @@ const ButtonRandomSelect = ({selected, setSelected}) => {
     while (randomId === selected.id) {
       randomId = getRandomInt(range);
     }
-
-    const newVotes = [...selected.votes];
-    newVotes[randomId]++;
     const newSelected = {
       ...selected,
-      votes: newVotes,
-      id: randomId,
+      id: randomId
     };
 
-    console.log('random id', randomId, newSelected);
     setSelected(newSelected);
   }
 
   return <button onClick={handleClick}>next anecdote</button>
+}
+
+
+const ButtonVote = ({selected, setSelected}) => {
+  const HandleVote = () => {
+    const newVotes = [...selected.votes];
+    newVotes[selected.id]++;
+    const newSelected = {
+      ...selected,
+      votes: newVotes
+    };
+    setSelected(newSelected);
+  }
+  return <button onClick={HandleVote}>vote</button>
+}
+
+
+const AnecdoteWithMostVotes = ({selected, anecdotes}) => {
+  let idWithMostVotes = 0;
+  for(let i = 1; i < selected.votes.length; i++)
+  {
+    if(selected.votes[i] > selected.votes[idWithMostVotes])
+    {
+      idWithMostVotes = i;
+    }
+  }
+
+  if(selected.votes[idWithMostVotes] == 0)
+  {
+    return <></>
+  }
+
+  return (
+    <>
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[idWithMostVotes]}</p>
+      <p>Has {selected.votes[idWithMostVotes]} votes.</p>
+    </>
+  )
 }
 
 
@@ -47,10 +81,13 @@ function App() {
 
   return (
     <>
+      <h1>Anecdote of the day</h1>
       <div>
         {anecdotes[selected.id]}<br/> Has {selected.votes[selected.id]} votes.
       </div>
+      <ButtonVote selected={selected} setSelected={setSelected}></ButtonVote>
       <ButtonRandomSelect selected={selected} setSelected={setSelected}></ButtonRandomSelect>
+      <AnecdoteWithMostVotes selected={selected} anecdotes={anecdotes}></AnecdoteWithMostVotes>
     </>
   )
 }
