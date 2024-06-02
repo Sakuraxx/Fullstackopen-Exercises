@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 const Button = ({ text, value, onClick }) => {
-  console.log(text, value);
   return <button onClick={() => onClick(value + 1)}>{text}</button>
 }
 
@@ -17,19 +16,30 @@ const Statistics = ({good, neutral, bad}) => {
 
   return (
     <>
-        <h1>statistics</h1>
-        <StatisticLine text="good" value={good}></StatisticLine>
-        <StatisticLine text="neutral" value={neutral}></StatisticLine>
-        <StatisticLine text="bad" value={bad}></StatisticLine>
-        <StatisticLine text="all" value={total}></StatisticLine>
-        <StatisticLine text="average score" value={average}></StatisticLine>
-        <StatisticLine text="positive" value={positive}></StatisticLine>
+      <h1>statistics</h1>
+      <table>
+        <tbody>
+          <StatisticLine text="good" value={good}></StatisticLine>
+          <StatisticLine text="neutral" value={neutral}></StatisticLine>
+          <StatisticLine text="bad" value={bad}></StatisticLine>
+          <StatisticLine text="all" value={total}></StatisticLine>
+          <StatisticLine text="average" value={average}></StatisticLine>
+          <StatisticLine text="positive" value={positive} unit="%"></StatisticLine>
+        </tbody>
+      </table>
     </>
   )
 }
 
-const StatisticLine = ({text, value}) => {
-  return <p>{text}: {value}</p>
+const StatisticLine = ({text, value, unit=""}) => {
+  return (
+    <>
+      <tr>
+        <td>{text}</td>
+        <td>{value.toFixed(2)} {unit}</td>
+      </tr>
+    </>
+  )
 }
 
 function App() {
