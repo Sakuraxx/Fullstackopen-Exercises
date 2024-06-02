@@ -1,18 +1,30 @@
 import { useState } from 'react'
 
-const ButtonRandomSelect = ({range, lastId, onClick}) => {
-  function getRandomInt(max) {
+const ButtonRandomSelect = ({selected, setSelected}) => {
+  const getRandomInt = (max) => {
     return Math.floor(Math.random() * max);
-  }
-  let  randomId = getRandomInt(range);
-  while(randomId == lastId)
-  {
-    randomId = getRandomInt(range);
+  };
+
+  const handleClick = () => {
+    let range = selected.votes.length;
+    let randomId = getRandomInt(range);
+    while (randomId === selected.id) {
+      randomId = getRandomInt(range);
+    }
+
+    const newVotes = [...selected.votes];
+    newVotes[randomId]++;
+    const newSelected = {
+      ...selected,
+      votes: newVotes,
+      id: randomId,
+    };
+
+    console.log('random id', randomId, newSelected);
+    setSelected(newSelected);
   }
 
-  console.log("random id", randomId);
-
-  return <button onClick={() => onClick(randomId)}>next anecdote</button>
+  return <button onClick={handleClick}>next anecdote</button>
 }
 
 
@@ -28,14 +40,17 @@ function App() {
     'The only way to go fast, is to go well.'
   ]
 
-  const [selected, setSelected] = useState(0)
+  const [selected, setSelected] = useState({
+    id:0,
+    votes: new Array(anecdotes.length).fill(0)
+  })
 
   return (
     <>
       <div>
-        {anecdotes[selected]}
+        {anecdotes[selected.id]}<br/> Has {selected.votes[selected.id]} votes.
       </div>
-      <ButtonRandomSelect range={anecdotes.length} lastId={selected} onClick={setSelected}></ButtonRandomSelect>
+      <ButtonRandomSelect selected={selected} setSelected={setSelected}></ButtonRandomSelect>
     </>
   )
 }
