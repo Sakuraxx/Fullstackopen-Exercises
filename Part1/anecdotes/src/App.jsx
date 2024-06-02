@@ -62,6 +62,20 @@ const AnecdoteWithMostVotes = ({selected, anecdotes}) => {
 }
 
 
+const AnecdoteDailyDynamic = ({selected, setSelected, anecdotes}) => {
+  return (
+    <>
+      <h1>Anecdote of the day</h1>
+      <div>
+        {anecdotes[selected.id]}<br/> Has {selected.votes[selected.id]} votes.
+      </div>
+      <ButtonVote selected={selected} setSelected={setSelected}></ButtonVote>
+      <ButtonRandomSelect selected={selected} setSelected={setSelected}></ButtonRandomSelect>
+    </>
+  )
+}
+
+
 function App() {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -81,12 +95,7 @@ function App() {
 
   return (
     <>
-      <h1>Anecdote of the day</h1>
-      <div>
-        {anecdotes[selected.id]}<br/> Has {selected.votes[selected.id]} votes.
-      </div>
-      <ButtonVote selected={selected} setSelected={setSelected}></ButtonVote>
-      <ButtonRandomSelect selected={selected} setSelected={setSelected}></ButtonRandomSelect>
+      <AnecdoteDailyDynamic selected={selected} setSelected={setSelected} anecdotes={anecdotes}></AnecdoteDailyDynamic>
       <AnecdoteWithMostVotes selected={selected} anecdotes={anecdotes}></AnecdoteWithMostVotes>
     </>
   )
