@@ -1,9 +1,11 @@
 const Course = ({ course }) => {
   console.log(course);
+  let total = course.parts.reduce((sum, item) => sum + item.exercises, 0);
   return (
     <>
       <Header header={course.name}></Header>
       <Content parts={course.parts}></Content>
+      <b>total of {total} exercises</b>
     </>
   );
 };
