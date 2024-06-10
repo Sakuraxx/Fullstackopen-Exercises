@@ -1,23 +1,35 @@
-import { useState } from 'react'
+import { useState } from "react";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
-  ])
-  const [newName, setNewName] = useState('')
+  const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
+  const [newName, setNewName] = useState("");
+
+  function checkIfExistSameNameInContact(name) {
+    for (const person of persons) {
+      if (name === person.name) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
-    const newPerson = {
-      name: newName
+    if (checkIfExistSameNameInContact(newName)) {
+      alert(`${newName} is already added to phonebook`);
+      return;
     }
+
+    const newPerson = {
+      name: newName,
+    };
     const newPersons = [...persons, newPerson];
     setPersons(newPersons);
-    setNewName('');
+    setNewName("");
   }
 
   function handleOnChange(event) {
-    console.log('onchange', event.target.value);
+    console.log("onchange", event.target.value);
     setNewName(event.target.value);
   }
 
@@ -26,18 +38,20 @@ const App = () => {
       <h2>Phonebook</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          name: <input value={newName} onChange={handleOnChange}/>
+          name: <input value={newName} onChange={handleOnChange} />
         </div>
         <div>
           <button type="submit">add</button>
         </div>
-        </form>
+      </form>
       <h2>Numbers</h2>
       <ul>
-        {persons.map((p, key) => <li key={key}>{p.name}</li>)}
+        {persons.map((p, key) => (
+          <li key={key}>{p.name}</li>
+        ))}
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
