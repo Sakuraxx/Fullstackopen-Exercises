@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const PersonForm = ({
   newName,
   setNewName,
@@ -30,6 +32,12 @@ const PersonForm = ({
     setPersons(newPersons);
     setNewName("");
     setNewNumber("");
+
+    axios
+    .post('http://localhost:3001/persons', newPerson)
+    .then(response => {
+      console.log(response)
+    })
   }
 
   function handleOnChangeName(event) {
