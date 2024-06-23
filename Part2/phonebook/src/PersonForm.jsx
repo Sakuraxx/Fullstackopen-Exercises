@@ -7,7 +7,7 @@ const PersonForm = ({
   setPersons,
   newNumber,
   setNewNumber,
-  setMessage,
+  setNormalMsg,
 }) => {
   const newPerson = {
     name: newName,
@@ -23,10 +23,10 @@ const PersonForm = ({
     return false;
   }
 
-  const notifyMessage = (msg) => {
-    setMessage(msg);
+  const notifyNormalMsg = (msg) => {
+    setNormalMsg(msg);
     setTimeout(() => {
-      setMessage(null);
+      setNormalMsg(null);
     }, 5000);
   };
 
@@ -50,7 +50,7 @@ const PersonForm = ({
           setNewNumber("");
         });
 
-        notifyMessage(`Updated ${newName}`);
+        notifyNormalMsg(`Updated ${newName}`);
       }
 
       return;
@@ -62,7 +62,7 @@ const PersonForm = ({
       setNewName("");
       setNewNumber("");
 
-      notifyMessage(`Created ${newName}`);
+      notifyNormalMsg(`Created ${newName}`);
     });
   }
 

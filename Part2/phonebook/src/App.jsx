@@ -3,14 +3,14 @@ import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Person from "./Person";
 import PersonService from "./PersonService";
-import { NormalNotifcation } from "./Notification";
+import { Notification } from "./Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterName, setFilterName] = useState("");
-  const [message, setMessage] = useState("");
+  const [normalMsg, setNormalMsg] = useState("");
 
   const shownPersons =
     filterName === ""
@@ -24,7 +24,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <NormalNotifcation message={message}></NormalNotifcation>
+      <Notification normalMsg={normalMsg}></Notification>
       <Filter filterName={filterName} setFilterName={setFilterName} />
       <h2>add a new</h2>
       <PersonForm
@@ -34,7 +34,7 @@ const App = () => {
         setPersons={setPersons}
         newNumber={newNumber}
         setNewNumber={setNewNumber}
-        setMessage={setMessage}
+        setNormalMsg={setNormalMsg}
       />
       <h2>Numbers</h2>
       <Person

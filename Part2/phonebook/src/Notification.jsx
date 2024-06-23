@@ -1,19 +1,23 @@
-const Notification = ({ message, style }) => {
-  if (message === null) {
+const Notification = ({ normalMsg, errMsg }) => {
+  console.log("msg", normalMsg, errMsg);
+
+  if (isNullOrUndefined(normalMsg) && isNullOrUndefined(errMsg)) {
     return null;
   }
 
-  return <div style={style}>{message}1111</div>;
-};
-
-const NormalNotifcation = ({ message }) => {
   const style = {
-    color: "green",
+    color: isNullOrUndefined(normalMsg) ? "red" : "green",
     fontStyle: "italic",
     fontSize: 24,
   };
 
-  return <Notification message={message} style={style}></Notification>;
+  let message = isNullOrUndefined(normalMsg) ? errMsg : normalMsg;
+
+  return <div style={style}>{message}</div>;
 };
 
-export { NormalNotifcation };
+const isNullOrUndefined = (msg) => {
+  return msg === null || msg === undefined;
+};
+
+export { Notification };
