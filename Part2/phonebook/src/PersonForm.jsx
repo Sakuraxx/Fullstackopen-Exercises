@@ -7,6 +7,7 @@ const PersonForm = ({
   setPersons,
   newNumber,
   setNewNumber,
+  setMessage
 }) => {
   const newPerson = {
     name: newName,
@@ -22,6 +23,13 @@ const PersonForm = ({
     return false;
   }
 
+  const notifyMessage = msg => {
+    setMessage(msg);
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
     if (checkIfExistSameNameInContact(newName)) {
@@ -33,6 +41,8 @@ const PersonForm = ({
           setNewName("");
           setNewNumber("");
         });
+
+        notifyMessage(`Updated ${newName}`)
       }
 
       return;
@@ -43,6 +53,8 @@ const PersonForm = ({
       setPersons(newPersons);
       setNewName("");
       setNewNumber("");
+
+      notifyMessage(`Created ${newName}`);
     });
   }
 
