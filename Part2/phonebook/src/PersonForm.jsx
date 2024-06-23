@@ -1,4 +1,4 @@
-import axios from "axios";
+import PersonService from "./PersonService";
 
 const PersonForm = ({
   newName,
@@ -28,16 +28,13 @@ const PersonForm = ({
       name: newName,
       number: newNumber,
     };
-    const newPersons = [...persons, newPerson];
-    setPersons(newPersons);
-    setNewName("");
-    setNewNumber("");
 
-    axios
-    .post('http://localhost:3001/persons', newPerson)
-    .then(response => {
-      console.log(response)
-    })
+    PersonService.create(newPerson).then(data => {
+      const newPersons = [...persons, data];
+      setPersons(newPersons);
+      setNewName("");
+      setNewNumber("");
+    });
   }
 
   function handleOnChangeName(event) {
