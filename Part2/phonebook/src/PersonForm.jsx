@@ -8,6 +8,11 @@ const PersonForm = ({
   newNumber,
   setNewNumber,
 }) => {
+  const newPerson = {
+    name: newName,
+    number: newNumber,
+  };
+
   function checkIfExistSameNameInContact(name) {
     for (const person of persons) {
       if (name === person.name) {
@@ -20,14 +25,18 @@ const PersonForm = ({
   function handleSubmit(event) {
     event.preventDefault();
     if (checkIfExistSameNameInContact(newName)) {
-      alert(`${newName} is already added to phonebook`);
+      if(window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+        let updateId = persons.filter(person => person.name === newName)[0].id;
+        PersonService.update(updateId, newPerson)
+        .then(updatePerson => {
+          setPersons(persons.map(person => person.id !== updateId ? person : updatePerson));
+          setNewName("");
+          setNewNumber("");
+        });
+      }
+
       return;
     }
-
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-    };
 
     PersonService.create(newPerson).then(data => {
       const newPersons = [...persons, data];
