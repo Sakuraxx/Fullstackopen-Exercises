@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filterName, setFilterName] = useState("");
   const [normalMsg, setNormalMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("");
 
   const shownPersons =
     filterName === ""
@@ -24,7 +25,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification normalMsg={normalMsg}></Notification>
+      <Notification normalMsg={normalMsg} errMsg={errMsg}></Notification>
       <Filter filterName={filterName} setFilterName={setFilterName} />
       <h2>add a new</h2>
       <PersonForm
@@ -35,12 +36,15 @@ const App = () => {
         newNumber={newNumber}
         setNewNumber={setNewNumber}
         setNormalMsg={setNormalMsg}
+        setErrMsg={setErrMsg}
       />
       <h2>Numbers</h2>
       <Person
         shownPersons={shownPersons}
         setPersons={setPersons}
         persons={persons}
+        setNormalMsg={setNormalMsg}
+        setErrMsg={setErrMsg}
       />
     </div>
   );

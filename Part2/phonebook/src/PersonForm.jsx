@@ -1,4 +1,5 @@
 import PersonService from "./PersonService";
+import { notifyNormalMsg, notifyErrMsg } from "./Notification";
 
 const PersonForm = ({
   newName,
@@ -8,6 +9,7 @@ const PersonForm = ({
   newNumber,
   setNewNumber,
   setNormalMsg,
+  setErrMsg,
 }) => {
   const newPerson = {
     name: newName,
@@ -23,13 +25,6 @@ const PersonForm = ({
     return false;
   }
 
-  const notifyNormalMsg = (msg) => {
-    setNormalMsg(msg);
-    setTimeout(() => {
-      setNormalMsg(null);
-    }, 5000);
-  };
-
   function handleSubmit(event) {
     event.preventDefault();
     if (checkIfExistSameNameInContact(newName)) {
@@ -40,30 +35,39 @@ const PersonForm = ({
       ) {
         let updateId = persons.filter((person) => person.name === newName)[0]
           .id;
-        PersonService.update(updateId, newPerson).then((updatePerson) => {
-          setPersons(
-            persons.map((person) =>
-              person.id !== updateId ? person : updatePerson,
-            ),
-          );
-          setNewName("");
-          setNewNumber("");
-        });
+        PersonService.update(updateId, newPerson)
+          .then((updatePerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== updateId ? person : updatePerson,
+              ),
+            );
+            setNewName("");
+            setNewNumber("");
+          })
+          .catch((err) => {
+            console.log("updated", err);
+            notifyErrMsg(`Updated ${newName} failed. ${err}`, setErrMsg);
+          });
 
-        notifyNormalMsg(`Updated ${newName}`);
+        notifyNormalMsg(`Updated ${newName}`, setNormalMsg);
       }
 
       return;
     }
 
-    PersonService.create(newPerson).then((data) => {
-      const newPersons = [...persons, data];
-      setPersons(newPersons);
-      setNewName("");
-      setNewNumber("");
+    PersonService.create(newPerson)
+      .then((data) => {
+        const newPersons = [...persons, data];
+        setPersons(newPersons);
+        setNewName("");
+        setNewNumber("");
 
-      notifyNormalMsg(`Created ${newName}`);
-    });
+        notifyNormalMsg(`Created ${newName}`, setNormalMsg);
+      })
+      .catch((err) => {
+        notifyErrMsg(`Created ${newName} failed. ${err}`, setErrMsg);
+      });
   }
 
   function handleOnChangeName(event) {
