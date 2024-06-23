@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Person from "./Person";
-import axios from 'axios';
 import PersonService from "./PersonService";
 
 const App = () => {
@@ -34,7 +33,7 @@ const App = () => {
         setNewNumber={setNewNumber}
       />
       <h2>Numbers</h2>
-      <Person shownPersons={shownPersons} />
+      <Person shownPersons={shownPersons} setPersons={setPersons} persons={persons}/>
     </div>
   );
 };
