@@ -1,11 +1,11 @@
 import PersonService from "./PersonService";
 
 const Person = ({ shownPersons, setPersons, persons }) => {
-  const handleDeletePerson = id => {
+  const handleDeletePerson = (id) => {
     if (window.confirm("Do you really want to delete this person?")) {
-      PersonService
-      .del(id)
-      .then(setPersons(persons.filter(p => p.id !== id)));
+      PersonService.del(id).then(
+        setPersons(persons.filter((p) => p.id !== id)),
+      );
     }
   };
 

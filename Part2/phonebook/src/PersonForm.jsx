@@ -7,7 +7,7 @@ const PersonForm = ({
   setPersons,
   newNumber,
   setNewNumber,
-  setMessage
+  setMessage,
 }) => {
   const newPerson = {
     name: newName,
@@ -23,32 +23,40 @@ const PersonForm = ({
     return false;
   }
 
-  const notifyMessage = msg => {
+  const notifyMessage = (msg) => {
     setMessage(msg);
     setTimeout(() => {
-      setMessage(null)
-    }, 5000)
-  }
+      setMessage(null);
+    }, 5000);
+  };
 
   function handleSubmit(event) {
     event.preventDefault();
     if (checkIfExistSameNameInContact(newName)) {
-      if(window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
-        let updateId = persons.filter(person => person.name === newName)[0].id;
-        PersonService.update(updateId, newPerson)
-        .then(updatePerson => {
-          setPersons(persons.map(person => person.id !== updateId ? person : updatePerson));
+      if (
+        window.confirm(
+          `${newName} is already added to the phonebook, replace the old number with a new one?`,
+        )
+      ) {
+        let updateId = persons.filter((person) => person.name === newName)[0]
+          .id;
+        PersonService.update(updateId, newPerson).then((updatePerson) => {
+          setPersons(
+            persons.map((person) =>
+              person.id !== updateId ? person : updatePerson,
+            ),
+          );
           setNewName("");
           setNewNumber("");
         });
 
-        notifyMessage(`Updated ${newName}`)
+        notifyMessage(`Updated ${newName}`);
       }
 
       return;
     }
 
-    PersonService.create(newPerson).then(data => {
+    PersonService.create(newPerson).then((data) => {
       const newPersons = [...persons, data];
       setPersons(newPersons);
       setNewName("");

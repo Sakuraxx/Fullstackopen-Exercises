@@ -3,7 +3,7 @@ import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Person from "./Person";
 import PersonService from "./PersonService";
-import Notification from "./Notification";
+import { NormalNotifcation } from "./Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -18,13 +18,13 @@ const App = () => {
       : persons.filter((p) => p.name.includes(filterName));
 
   useEffect(() => {
-    PersonService.getAll().then(data => setPersons(data))
-  }, [])
+    PersonService.getAll().then((data) => setPersons(data));
+  }, []);
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message}></Notification>
+      <NormalNotifcation message={message}></NormalNotifcation>
       <Filter filterName={filterName} setFilterName={setFilterName} />
       <h2>add a new</h2>
       <PersonForm
@@ -37,7 +37,11 @@ const App = () => {
         setMessage={setMessage}
       />
       <h2>Numbers</h2>
-      <Person shownPersons={shownPersons} setPersons={setPersons} persons={persons}/>
+      <Person
+        shownPersons={shownPersons}
+        setPersons={setPersons}
+        persons={persons}
+      />
     </div>
   );
 };

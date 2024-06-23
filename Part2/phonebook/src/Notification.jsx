@@ -1,19 +1,19 @@
-const Notification = ({ message }) => {
-    if (message === null) {
-      return null
-    }
-
-    const style = {
-        color: 'green',
-        fontStyle: 'italic',
-        fontSize: 24
-    }
-
-    return (
-      <div style={style}>
-        {message}
-      </div>
-    )
+const Notification = ({ message, style }) => {
+  if (message === null) {
+    return null;
   }
 
-  export default Notification;
+  return <div style={style}>{message}1111</div>;
+};
+
+const NormalNotifcation = ({ message }) => {
+  const style = {
+    color: "green",
+    fontStyle: "italic",
+    fontSize: 24,
+  };
+
+  return <Notification message={message} style={style}></Notification>;
+};
+
+export { NormalNotifcation };
