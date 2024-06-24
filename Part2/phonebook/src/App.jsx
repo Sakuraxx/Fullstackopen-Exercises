@@ -3,7 +3,7 @@ import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Person from "./Person";
 import PersonService from "./PersonService";
-import { Notification } from "./Notification";
+import { ErrorNotification, NormalNotification } from "./Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -25,7 +25,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification normalMsg={normalMsg} errMsg={errMsg}></Notification>
+      <NormalNotification msg={normalMsg}></NormalNotification>
+      <ErrorNotification msg={errMsg}></ErrorNotification>
       <Filter filterName={filterName} setFilterName={setFilterName} />
       <h2>add a new</h2>
       <PersonForm

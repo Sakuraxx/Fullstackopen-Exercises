@@ -46,7 +46,6 @@ const PersonForm = ({
             setNewNumber("");
           })
           .catch((err) => {
-            console.log("updated", err);
             notifyErrMsg(`Updated ${newName} failed. ${err}`, setErrMsg);
           });
 
