@@ -46,7 +46,10 @@ const PersonForm = ({
             setNewNumber("");
           })
           .catch((err) => {
-            notifyErrMsg(`Updated ${newName} failed. ${err}`, setErrMsg);
+            notifyErrMsg(
+              `Updated ${newName} failed. ${err.response.data.error}`,
+              setErrMsg,
+            );
           });
 
         notifyNormalMsg(`Updated ${newName}`, setNormalMsg);
@@ -65,7 +68,10 @@ const PersonForm = ({
         notifyNormalMsg(`Created ${newName}`, setNormalMsg);
       })
       .catch((err) => {
-        notifyErrMsg(`Created ${newName} failed. ${err}`, setErrMsg);
+        notifyErrMsg(
+          `Created ${newName} failed. ${err.response.data.error}`,
+          setErrMsg,
+        );
       });
   }
 

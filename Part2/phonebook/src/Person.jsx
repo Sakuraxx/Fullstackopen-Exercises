@@ -17,7 +17,10 @@ const Person = ({
           notifyNormalMsg(`Deleted ${delPerson.name}`, setNormalMsg);
         })
         .catch((err) => {
-          notifyErrMsg(`Deleted ${delPerson.name} failed. ${err}`, setErrMsg);
+          notifyErrMsg(
+            `Deleted ${delPerson.name} failed. ${err.response.data.error}`,
+            setErrMsg,
+          );
         });
     }
   };
