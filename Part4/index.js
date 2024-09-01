@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const Blog = require("./model/blog");
 const config = require("./utils/config");
+const logger = require("./utils/logger");
 
 const app = express();
 
@@ -16,7 +17,6 @@ app.get("/api/blogs", (request, response) => {
 
 app.post("/api/blogs", (request, response) => {
   const blog = new Blog(request.body);
-  console.log("post", blog);
   blog.save().then((result) => {
     response.status(201).json(result);
   });
@@ -24,5 +24,5 @@ app.post("/api/blogs", (request, response) => {
 
 const PORT = config.PORT;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  logger.info(`Server running on port ${PORT}`);
 });
