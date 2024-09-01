@@ -7,7 +7,27 @@ const totalLikes = (blogs) => {
   return totalLikes;
 };
 
+const favoriteBlog = (blogs) => {
+  if (blogs.length === 0) return [];
+
+  let maxLikes = blogs[0].likes;
+  let blogsWithMostLikes = [blogs[0]];
+
+  for (let i = 1; i < blogs.length; i++) {
+    const currentBlog = blogs[i];
+    if (currentBlog.likes > maxLikes) {
+      maxLikes = currentBlog.likes;
+      blogsWithMostLikes = [currentBlog];
+    } else if (currentBlog.likes === maxLikes) {
+      blogsWithMostLikes.push(currentBlog);
+    }
+  }
+
+  return blogsWithMostLikes;
+};
+
 module.exports = {
   dummy,
   totalLikes,
+  favoriteBlog,
 };
