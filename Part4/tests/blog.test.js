@@ -1,6 +1,7 @@
 const { test, describe } = require("node:test");
 const assert = require("node:assert");
 const listHelper = require("../utils/list_helper");
+const _ = require("lodash");
 
 test("dummy returns one", () => {
   const blogs = [];
@@ -127,5 +128,48 @@ describe("blogs with most likes", () => {
 
     const result = listHelper.favoriteBlog(blogsWithMostLikes);
     assert.deepStrictEqual(blogsWithMostLikes, result);
+  });
+});
+
+describe("author with the most blogs", () => {
+  test("only one author has the most blogs", () => {
+    const onlyOneAuthorHasMostBolgs = [
+      {
+        title: "Go To Statement Considered Harmful",
+        author: "Edsger W. Dijkstra",
+      },
+      {
+        title: "Go To Hell",
+        author: "Edsger W. Dijkstra",
+      },
+      {
+        title: "Where can we go",
+        author: "MM",
+      },
+    ];
+
+    const result = listHelper.mostBlogs(onlyOneAuthorHasMostBolgs);
+    assert.deepStrictEqual({ author: "Edsger W. Dijkstra", blogs: 2 }, result);
+  });
+
+  test("more than one author have the most blogs", () => {
+    const moreThanOneAuthorHaveMostBolgs = [
+      {
+        title: "Go To Statement Considered Harmful",
+        author: "Edsger W. Dijkstra",
+      },
+      {
+        title: "Where can we go",
+        author: "MM",
+      },
+    ];
+
+    const result = listHelper.mostBlogs(moreThanOneAuthorHaveMostBolgs);
+    const actualRes = [
+      { author: "Edsger W. Dijkstra", blogs: 1 },
+      { author: "MM", blogs: 1 },
+    ];
+    const exists = _.some(actualRes, _.isEqual.bind(null, result));
+    assert.strictEqual(true, exists);
   });
 });
