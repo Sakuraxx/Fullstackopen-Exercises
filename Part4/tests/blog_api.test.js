@@ -38,6 +38,16 @@ test('blogs are returned as json', async () => {
         .expect('Content-Type', /application\/json/);
 });
 
+
+test('blog\'s unique identifier property is named id', async () => {
+    const response = await api.get('/api/blogs');
+    const blogs = response.body;
+    blogs.forEach(blog => {
+        assert(blog.id !== undefined, 'id field is missing');
+        assert(blog.id !== '', 'id field is empty');
+    })
+});
+
 test('there are two blogs', async () => {
     const response = await api.get('/api/blogs')
 
