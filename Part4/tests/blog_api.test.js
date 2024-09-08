@@ -68,6 +68,19 @@ test('save one blog and the total number of blogs is increased by 1', async () =
     assert(titles.includes('Dark sky'));
 });
 
+test('default value of likes should be 0 if missing in request', async () => {
+    const newBlog = {
+        title: 'A new blog',
+        author: 'Author Name',
+        url: 'http://example.com'
+        // No 'likes' property
+    };
+
+    const response = await api.post('/api/blogs').send(newBlog);
+
+    assert.strictEqual(response.status, 201);
+    assert.strictEqual(response.body.likes, 0);
+});
 
 test('there are two blogs', async () => {
     const response = await api.get('/api/blogs')
