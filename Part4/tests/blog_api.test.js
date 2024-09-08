@@ -82,6 +82,30 @@ test('default value of likes should be 0 if missing in request', async () => {
     assert.strictEqual(response.body.likes, 0);
 });
 
+test('blog creation fails with 400 if title is missing', async () => {
+    const newBlog = {
+        author: 'LittleBread',
+        url: 'http://example.com',
+        likes: 5
+    };
+
+    const response = await api.post('/api/blogs').send(newBlog);
+
+    assert.strictEqual(response.status, 400);
+});
+
+test('blog creation fails with 400 if url is missing', async () => {
+    const newBlog = {
+        title: 'A new blog',
+        author: 'LittleBread',
+        likes: 5
+    };
+
+    const response = await api.post('/api/blogs').send(newBlog);
+
+    assert.strictEqual(response.status, 400);
+});
+
 test('there are two blogs', async () => {
     const response = await api.get('/api/blogs')
 
