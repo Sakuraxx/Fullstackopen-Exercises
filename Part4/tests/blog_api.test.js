@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
 const assert = require("node:assert");
-const { initialBlogs } = require('./test_helper')
+const { initialBlogs, blogsInDb } = require('./test_helper');
 
 const api = supertest(app);
 
@@ -104,7 +104,25 @@ describe('when there is initially some blogs saved', () => {
             const titles = response.body.map(e => e.title)
             assert(titles.includes('What is hedgehock'))
         });
-    })
+    });
+
+    describe('delete blogs', () => {
+        test('succeeds with status code 204 if id is valid', async () => {
+            const blogsAtStart = await blogsInDb();
+            const blogToDelete = blogsAtStart[0];
+
+            await api
+                .delete(`/api/blogs/${blogToDelete.id}`)
+                .expect(204);
+
+            const blogsAtEnd = await blogsInDb()
+
+            assert.strictEqual(blogsAtEnd.length, initialBlogs.length - 1)
+
+            const titles = blogsAtEnd.map(r => r.title)
+            assert(!titles.includes(blogToDelete.content))
+        })
+    });
 });
 
 after(async () => {
