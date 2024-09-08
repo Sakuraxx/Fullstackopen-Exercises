@@ -120,9 +120,27 @@ describe('when there is initially some blogs saved', () => {
             assert.strictEqual(blogsAtEnd.length, initialBlogs.length - 1)
 
             const titles = blogsAtEnd.map(r => r.title)
-            assert(!titles.includes(blogToDelete.content))
+            assert(!titles.includes(blogToDelete.title))
         })
     });
+
+    describe('modify blogs', () => {
+        test('succeeds with updating', async () => {
+            const blogsAtStart = await blogsInDb();
+            const blogToUpdate = blogsAtStart[0];
+            blogToUpdate.author = 'LittleBread';
+            await api
+                .put(`/api/blogs/${blogToUpdate.id}`)
+                .send(blogToUpdate)
+                .expect(200);
+
+            const blogsAtEnd = await blogsInDb();
+            assert.strictEqual(blogsAtEnd.length, initialBlogs.length);
+            const authors = blogsAtEnd.map(r => r.author);
+            assert(authors.includes(blogToUpdate.author));
+        });
+    });
+
 });
 
 after(async () => {

@@ -34,10 +34,20 @@ blogsRouter.delete("/:id", async (request, response) => {
 });
 
 blogsRouter.put("/:id", async (request, response) => {
+  const body = request.body;
+  if (!body.title || !body.url) {
+    return response.status(400).json({ error: 'title or url is missing' });
+  }
+
   const updatedBlog = { ...request.body };
   delete updatedBlog._id;
   const blog = await Blog.findByIdAndUpdate({ _id: request.params.id }, updatedBlog, { new: true })
-  response.json(blog);
+  if (blog) {
+    response.status(200).json(blog);
+  }
+  else {
+    response.status(404).json({ error: 'blog not found' });
+  }
 });
 
 module.exports = blogsRouter;
