@@ -4,6 +4,7 @@ const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
 const assert = require("node:assert");
+const blog = require('../models/blog');
 
 const api = supertest(app);
 
@@ -47,6 +48,26 @@ test('blog\'s unique identifier property is named id', async () => {
         assert(blog.id !== '', 'id field is empty');
     })
 });
+
+
+test('save one blog and the total number of blogs is increased by 1', async () => {
+    const blogToBeSaved = {
+        "title": "Dark sky",
+        "author": "LittleBread",
+        "url": "https://www.sky.com",
+        "likes": 1
+    };
+    await api
+        .post('/api/blogs')
+        .send(blogToBeSaved)
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+    const response = await api.get('/api/blogs');
+    const titles = response.body.map(r => r.title);
+    assert.strictEqual(response.body.length, initialBlogs.length + 1);
+    assert(titles.includes('Dark sky'));
+});
+
 
 test('there are two blogs', async () => {
     const response = await api.get('/api/blogs')
