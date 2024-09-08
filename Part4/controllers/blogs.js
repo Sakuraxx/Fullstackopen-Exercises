@@ -1,10 +1,9 @@
 const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
 
-blogsRouter.get("/", (request, response) => {
-  Blog.find({}).then((blogs) => {
-    response.json(blogs);
-  });
+blogsRouter.get("/", async (request, response) => {
+  const blogs = await Blog.find({});
+  response.json(blogs);
 });
 
 blogsRouter.get("/:id", (request, response, next) => {
@@ -40,8 +39,6 @@ blogsRouter.delete("/:id", (request, response, next) => {
 blogsRouter.put("/:id", (request, response, next) => {
   const updatedBlog = { ...request.body };
   delete updatedBlog._id;
-
-  console.log("update blog", updatedBlog);
 
   Blog.findByIdAndUpdate({ _id: request.params.id }, updatedBlog, { new: true })
     .then((updatedBlog) => {
