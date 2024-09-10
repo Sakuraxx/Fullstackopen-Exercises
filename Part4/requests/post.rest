@@ -5,7 +5,8 @@ Content-Type: application/json
     "title": "What is xxx",
     "author": "Cactus",
     "url": "https://www.xxx.com",
-    "likes": 0
+    "likes": 11,
+    "userId": "66e03d8387acae1a126be48e"
 }
 
 ###
