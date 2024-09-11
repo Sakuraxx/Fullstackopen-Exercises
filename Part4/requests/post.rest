@@ -1,11 +1,12 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY2ZTAzZDgzODdhY2FlMWExMjZiZTQ4ZSIsImlhdCI6MTcyNjA2Njk5MH0.ZPqEBq5X8Jp-w3T63lB2S8_a4DXf3BVypuoDcRfUSbg
 
 {
-    "title": "What is xxx",
+    "title": "What is lemon pie",
     "author": "Cactus",
     "url": "https://www.xxx.com",
-    "likes": 11,
+    "likes": 100,
     "userId": "66e03d8387acae1a126be48e"
 }
 
