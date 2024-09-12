@@ -1,7 +1,6 @@
 const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
 const User = require('../models/user');
-const jwt = require('jsonwebtoken')
 
 blogsRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({}).populate('user');
@@ -32,13 +31,7 @@ blogsRouter.post("/", async (request, response) => {
     body.likes = 0;
   }
 
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' });
-  }
-
-  const user = await User.findById(decodedToken.id)
-
+  const user = request.user;
   const blog = new Blog({ ...body, user: user.id });
   const savedBlog = await blog.save();
   user.blogs = user.blogs.concat(savedBlog._id);
@@ -48,19 +41,14 @@ blogsRouter.post("/", async (request, response) => {
 });
 
 blogsRouter.delete("/:id", async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' });
-  }
-
+  const user = request.user;
   const blogToRemove = await Blog.findById(request.params.id);
-
 
   if (!blogToRemove) {
     return response.status(401).json({ error: 'the blog dose no longer exists' });
   }
 
-  if (blogToRemove.user.toString() !== decodedToken.id.toString()) {
+  if (blogToRemove.user.toString() !== user.id.toString()) {
     return response.status(401).json({ error: 'dose not have the right to delete this blog' });
   }
 
