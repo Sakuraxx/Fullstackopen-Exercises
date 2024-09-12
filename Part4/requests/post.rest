@@ -20,6 +20,16 @@ Content-Type: application/json
     "password": "salainen"
 }
 
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+    "username": "cactus",
+    "name": "cc",
+    "password": "littleBread"
+}
+
 ### login
 POST http://localhost:3001/api/login
 Content-Type: application/json
@@ -27,4 +37,13 @@ Content-Type: application/json
 {
     "username": "root",
     "password": "salainen"
+}
+
+###
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+    "username": "cactus",
+    "password": "littleBread"
 }
