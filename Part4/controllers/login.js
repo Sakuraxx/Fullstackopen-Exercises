@@ -6,7 +6,6 @@ const User = require('../models/user');
 loginRouter.post('/', async (req, resp) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
-    console.log('user', user);
     const passwordCorrect = user === null
         ? false
         : await bcrypt.compare(password, user.passwordHash);
@@ -26,7 +25,6 @@ loginRouter.post('/', async (req, resp) => {
         process.env.SECRET,
         { expiresIn: 60 * 60 }
     );
-
     resp.status(200).send({ token, username: user.username, name: user.name });
 });
 

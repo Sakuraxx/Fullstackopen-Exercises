@@ -4,13 +4,13 @@ const User = require('../models/user');
 const initialBlogs = [
     {
         "title": "What is hedgehock",
-        "author": "Cactus",
+        "author": "CactusForTest",
         "url": "https://www.xxx.com",
         "likes": 0
     },
     {
         "title": "What is xxx",
-        "author": "Cactus2",
+        "author": "CactusForTest",
         "url": "https://www.xxx.com",
         "likes": 10
     },

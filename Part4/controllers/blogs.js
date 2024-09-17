@@ -23,10 +23,6 @@ blogsRouter.post("/", async (request, response) => {
     return response.status(400).json({ error: 'title or url is missing' });
   }
 
-  if (!body.userId) {
-    return response.status(400).json({ error: 'user id is missing' });
-  }
-
   if (body.likes === undefined) {
     body.likes = 0;
   }
@@ -43,7 +39,6 @@ blogsRouter.post("/", async (request, response) => {
 blogsRouter.delete("/:id", async (request, response) => {
   const user = request.user;
   const blogToRemove = await Blog.findById(request.params.id);
-
   if (!blogToRemove) {
     return response.status(401).json({ error: 'the blog dose no longer exists' });
   }
@@ -51,7 +46,6 @@ blogsRouter.delete("/:id", async (request, response) => {
   if (blogToRemove.user.toString() !== user.id.toString()) {
     return response.status(401).json({ error: 'dose not have the right to delete this blog' });
   }
-
   await Blog.findByIdAndDelete(request.params.id);
   response.status(204).end();
 });
