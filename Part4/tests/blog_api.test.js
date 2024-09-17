@@ -5,13 +5,26 @@ const Blog = require('../models/blog');
 const { initialBlogs, blogsInDb } = require('./test_helper');
 const jwt = require('jsonwebtoken');
 const api = supertest(app);
+const bcrypt = require('bcrypt');
+const User = require('../models/user');
 
-const userIdForTest = '66e85754528b92383bc4b4ac';
-
-// Mock jwt.verify
 jest.mock('jsonwebtoken', () => ({
-    verify: jest.fn().mockReturnValue({ id: userIdForTest })
+    verify: jest.fn()
 }));
+
+beforeAll(async () => {
+    await User.deleteMany({});
+
+    const passwordHash = await bcrypt.hash('sekret', 10);
+    const user = new User({ username: 'cactus', passwordHash });
+    const userForTest = await user.save();
+    const userIdForTest = userForTest.id;
+
+    // Set the mock implementation after userIdForTest has been set
+    jwt.verify.mockImplementation(() => {
+        return { id: userIdForTest };
+    });
+});
 
 describe('when there is initially some blogs saved', () => {
     jest.setTimeout(10000);
@@ -70,7 +83,6 @@ describe('when there is initially some blogs saved', () => {
                 author: 'Author Name',
                 url: 'http://example.com',
                 // No 'likes' property
-                "userId": userIdForTest
             };
 
             const response = await api.post('/api/blogs').send(newBlog);
@@ -117,7 +129,6 @@ describe('when there is initially some blogs saved', () => {
     describe('delete blogs', () => {
         test('succeeds with status code 204 if id is valid', async () => {
             const blogsAtStart = await blogsInDb();
-            console.log('blogs at start', blogsAtStart);
             const blogToDelete = blogsAtStart[0];
             await api
                 .delete(`/api/blogs/${blogToDelete.id}`)
