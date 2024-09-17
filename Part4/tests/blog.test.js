@@ -1,5 +1,3 @@
-const { test, describe } = require("node:test");
-const assert = require("node:assert");
 const listHelper = require("../utils/list_helper");
 const _ = require("lodash");
 
@@ -7,7 +5,7 @@ test("dummy returns one", () => {
   const blogs = [];
 
   const result = listHelper.dummy(blogs);
-  assert.strictEqual(result, 1);
+  expect(result).toBe(1);
 });
 
 describe("total likes", () => {
@@ -51,17 +49,17 @@ describe("total likes", () => {
 
   test("when list has only one blog, equals the likes of that", () => {
     const result = listHelper.totalLikes(listWithOneBlog);
-    assert.strictEqual(result, 5);
+    expect(result).toBe(5);
   });
 
   test("when list has many blogs, equals the likes of", () => {
     const result = listHelper.totalLikes(listWithManyBlogs);
-    assert.strictEqual(result, 17);
+    expect(result).toBe(17);
   });
 
   test("when list has no blogs, equals the likes of 0", () => {
     const result = listHelper.totalLikes([]);
-    assert.strictEqual(result, 0);
+    expect(result).toBe(0);
   });
 });
 
@@ -79,7 +77,7 @@ describe("blogs with most likes", () => {
     ];
 
     const result = listHelper.favoriteBlog(onlyOneBlogWithMostLikes);
-    assert.deepStrictEqual(onlyOneBlogWithMostLikes, result);
+    expect(onlyOneBlogWithMostLikes).toEqual(result);
   });
 
   test("only one blogs has the most likes in blogs", () => {
@@ -103,7 +101,7 @@ describe("blogs with most likes", () => {
     ];
 
     const result = listHelper.favoriteBlog(onlyOneBlogWithMostLikes);
-    assert.deepStrictEqual([onlyOneBlogWithMostLikes[1]], result);
+    expect([onlyOneBlogWithMostLikes[1]]).toEqual(result);
   });
 
   test("two blogs have the most likes in blogs", () => {
@@ -127,7 +125,7 @@ describe("blogs with most likes", () => {
     ];
 
     const result = listHelper.favoriteBlog(blogsWithMostLikes);
-    assert.deepStrictEqual(blogsWithMostLikes, result);
+    expect(blogsWithMostLikes).toEqual(result);
   });
 });
 
@@ -149,7 +147,7 @@ describe("author with the most blogs", () => {
     ];
 
     const result = listHelper.mostBlogs(onlyOneAuthorHasMostBolgs);
-    assert.deepStrictEqual({ author: "Edsger W. Dijkstra", blogs: 2 }, result);
+    expect({ author: "Edsger W. Dijkstra", blogs: 2 }).toEqual(result);
   });
 
   test("more than one author have the most blogs", () => {
@@ -170,6 +168,6 @@ describe("author with the most blogs", () => {
       { author: "MM", blogs: 1 },
     ];
     const exists = _.some(actualRes, _.isEqual.bind(null, result));
-    assert.strictEqual(true, exists);
+    expect(exists).toEqual(true);
   });
 });
