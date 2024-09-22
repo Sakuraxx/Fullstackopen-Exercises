@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import Togglable from "./components/Togglable";
+import BlogForm from "./components/BlogForm";
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -81,14 +83,6 @@ const App = () => {
     </form>
   );
 
-  const handleNewTitle = (event) => {
-    setNewTitle(event.target.value);
-  };
-
-  const handleNewURL = (event) => {
-    setNewURL(event.target.value);
-  };
-
   const addBlog = async (event) => {
     event.preventDefault();
 
@@ -114,15 +108,13 @@ const App = () => {
     }
   };
 
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
-      <label>Title:</label>
-      <input value={newTitle} onChange={handleNewTitle} />
-      <label>URL:</label>
-      <input value={newURL} onChange={handleNewURL} />
-      <button type="submit">save</button>
-    </form>
-  );
+  const handleTitleChange = (event) => {
+    setNewTitle(event.target.value);
+  };
+
+  const handleURLChange = (event) => {
+    setNewURL(event.target.value);
+  };
 
   return (
     <div>
@@ -133,7 +125,15 @@ const App = () => {
         <div>
           <p>{user.username} logged-in</p>
           <button onClick={handleLogout}>logout</button>
-          {blogForm()}
+          <Togglable buttonLabel="new blog">
+            <BlogForm
+              onSubmit={addBlog}
+              title={newTitle}
+              url={newURL}
+              handleTitleChange={handleTitleChange}
+              handleURLChange={handleURLChange}
+            ></BlogForm>
+          </Togglable>
         </div>
       )}
 
