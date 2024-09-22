@@ -25,6 +25,12 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
+  const handleLogout = (event) => {
+    window.localStorage.removeItem("loggedBlogAppUser");
+    setUser(null);
+    setBlogs([]);
+  };
+
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -122,6 +128,7 @@ const App = () => {
       ) : (
         <div>
           <p>{user.name} logged-in</p>
+          <button onClick={handleLogout}>logout</button>
           {blogForm()}
         </div>
       )}
