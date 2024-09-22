@@ -9,6 +9,8 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [newTitle, setNewTitle] = useState("");
+  const [newURL, setNewURL] = useState("");
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -23,9 +25,13 @@ const App = () => {
         password,
       });
       console.log("user", user);
+      blogService.setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
+
+      // Update blogs after logging
+      blogService.getAll().then((blogs) => setBlogs(blogs));
     } catch (exception) {
       setErrorMessage("Wrong credentials");
       setTimeout(() => {
@@ -58,7 +64,44 @@ const App = () => {
     </form>
   );
 
-  const blogForm = () => <div>add some blogs</div>;
+  const handleNewTitle = (event) => {
+    setNewTitle(event.target.value);
+  };
+
+  const handleNewURL = (event) => {
+    setNewURL(event.target.value);
+  };
+
+  const addBlog = async (event) => {
+    event.preventDefault();
+
+    const newBlog = {
+      title: newTitle,
+      url: newURL,
+    };
+
+    try {
+      const savedBlog = await blogService.create(newBlog);
+      console.log("saved blog", savedBlog);
+      setNewTitle("");
+      setNewURL("");
+    } catch (exception) {
+      setErrorMessage(exception);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  const blogForm = () => (
+    <form onSubmit={addBlog}>
+      <label>Title:</label>
+      <input value={newTitle} onChange={handleNewTitle} />
+      <label>URL:</label>
+      <input value={newURL} onChange={handleNewURL} />
+      <button type="submit">save</button>
+    </form>
+  );
 
   return (
     <div>
