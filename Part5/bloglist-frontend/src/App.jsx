@@ -13,6 +13,15 @@ const App = () => {
   const [newURL, setNewURL] = useState("");
 
   useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
+    }
+  }, []);
+
+  useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
@@ -29,6 +38,8 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
+
+      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
 
       // Update blogs after logging
       blogService.getAll().then((blogs) => setBlogs(blogs));
