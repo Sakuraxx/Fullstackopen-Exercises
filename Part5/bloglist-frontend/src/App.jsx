@@ -95,6 +95,7 @@ const App = () => {
     const newBlog = {
       title: newTitle,
       url: newURL,
+      author: user.username,
     };
 
     try {
@@ -102,6 +103,9 @@ const App = () => {
       console.log("saved blog", savedBlog);
       setNewTitle("");
       setNewURL("");
+
+      // update blogs afte adding new one
+      blogService.getAll().then((blogs) => setBlogs(blogs));
     } catch (exception) {
       setErrorMessage(exception);
       setTimeout(() => {
@@ -127,7 +131,7 @@ const App = () => {
         loginForm()
       ) : (
         <div>
-          <p>{user.name} logged-in</p>
+          <p>{user.username} logged-in</p>
           <button onClick={handleLogout}>logout</button>
           {blogForm()}
         </div>
