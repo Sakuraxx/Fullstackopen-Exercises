@@ -107,6 +107,18 @@ const App = () => {
     }
   };
 
+  const removeBlog = async (rBlog) => {
+    try {
+      await blogService.remove(rBlog.id);
+      blogService.getAll().then((blogs) => setBlogs(blogs));
+    } catch (exception) {
+      setErrorMessage(exception);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
   return (
     <div>
       <div>{errorMessage}</div>
@@ -126,7 +138,12 @@ const App = () => {
       {blogs
         .sort((first, second) => second.likes - first.likes)
         .map((blog) => (
-          <Blog key={blog.id} blog={blog} update={updateBlog} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            update={updateBlog}
+            remove={removeBlog}
+          />
         ))}
     </div>
   );
