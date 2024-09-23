@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 const BlogForm = ({ createBlog }) => {
-  const [newTitle, setNewTitle] = useState("");
-  const [newURL, setNewURL] = useState("");
+  const [newTitle, setNewTitle] = useState('');
+  const [newURL, setNewURL] = useState('');
 
   const handleTitleChange = (event) => {
     setNewTitle(event.target.value);
@@ -22,8 +22,8 @@ const BlogForm = ({ createBlog }) => {
 
     createBlog(newBlog);
 
-    setNewTitle("");
-    setNewURL("");
+    setNewTitle('');
+    setNewURL('');
   };
 
   return (

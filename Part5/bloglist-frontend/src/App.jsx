@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
-import Togglable from "./components/Togglable";
-import BlogForm from "./components/BlogForm";
-import LoginForm from "./components/LoginForm";
+import { useState, useEffect } from 'react';
+import Blog from './components/Blog';
+import blogService from './services/blogs';
+import loginService from './services/login';
+import Togglable from './components/Togglable';
+import BlogForm from './components/BlogForm';
+import LoginForm from './components/LoginForm';
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -12,7 +12,7 @@ const App = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
@@ -25,7 +25,7 @@ const App = () => {
   }, []);
 
   const handleLogout = (event) => {
-    window.localStorage.removeItem("loggedBlogAppUser");
+    window.localStorage.removeItem('loggedBlogAppUser');
     setUser(null);
     setBlogs([]);
   };
@@ -38,11 +38,11 @@ const App = () => {
       });
       blogService.setToken(user.token);
       setUser(user);
-      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user));
       // Update blogs after logging
       blogService.getAll().then((blogs) => setBlogs(blogs));
     } catch (exception) {
-      setErrorMessage("Wrong credentials");
+      setErrorMessage('Wrong credentials');
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
