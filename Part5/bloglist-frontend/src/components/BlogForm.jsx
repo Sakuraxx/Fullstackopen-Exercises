@@ -29,9 +29,9 @@ const BlogForm = ({ createBlog }) => {
   return (
     <form onSubmit={onSubmit}>
       <label>Title:</label>
-      <input value={newTitle} onChange={handleTitleChange} />
+      <input value={newTitle} onChange={handleTitleChange} id='title-input'/>
       <label>URL:</label>
-      <input value={newURL} onChange={handleURLChange} />
+      <input value={newURL} onChange={handleURLChange} id='url-input'/>
       <button type="submit">save</button>
     </form>
   );
