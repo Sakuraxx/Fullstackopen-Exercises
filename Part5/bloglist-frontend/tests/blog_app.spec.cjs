@@ -70,7 +70,7 @@ describe('Blog app', () => {
       expect(blogText0).toContain(title);
     });
 
-    test('the blog can be liked', async ({page}) => {
+    test('the blog can be liked', async ({ page }) => {
       await page.getByRole('button', { name: 'new blog' }).click();
 
       const titleInput = page.locator('#title-input');
@@ -85,6 +85,35 @@ describe('Blog app', () => {
 
       await page.waitForTimeout(2000);
       expect(await page.getByTestId('likes').innerText()).toContain('1');
+    });
+
+    test('the blog can be removed', async ({ page }) => {
+      page.on('dialog', async dialog => {
+        console.log(dialog.message());
+        await dialog.accept();
+      });
+
+      await page.getByRole('button', { name: 'new blog' }).click();
+
+      const titleInput = page.locator('#title-input');
+      const urltInput = page.locator('#url-input');
+      const title = 'Test by Playwright';
+      await titleInput.fill(title);
+      await urltInput.fill('http://example.com');
+
+      await page.getByRole('button', { name: 'save' }).click();
+      await page.waitForTimeout(2000);
+
+      const blogs = page.locator('.blog');
+      const count = await blogs.count();
+      expect(count).toBeGreaterThan(0);
+
+      await page.getByTestId('view').click();
+      await page.getByTestId('remove').click();
+
+      await page.waitForTimeout(1000);
+      const blogsAfterDeleting = page.locator('.blog');
+      await expect(blogsAfterDeleting).toHaveCount(0);
     });
   })
 
