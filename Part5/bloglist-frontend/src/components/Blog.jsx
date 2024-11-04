@@ -36,7 +36,7 @@ const Blog = ({ blog, update, remove }) => {
     <div style={blogStyle} className='blog'>
       <div style={hideWhenVisible} className='hideWhenVisible'>
         {blog.title}
-        <button onClick={toggleVisibility}>view</button>
+        <button onClick={toggleVisibility} data-testid='view'>view</button>
       </div>
       <div style={showWhenVisible} className='showWhenVisible'>
         <div>
@@ -45,8 +45,8 @@ const Blog = ({ blog, update, remove }) => {
         </div>
         <p>{blog.url}</p>
         <div>
-          <span>likes {blog.likes}</span>
-          <button onClick={handleLikes}>like</button>
+          <span data-testid='likes'>likes {blog.likes}</span>
+          <button onClick={handleLikes} data-testid='likeBtn'>like</button>
         </div>
         <p>{blog.author}</p>
         <button onClick={handleRemove}>remove</button>

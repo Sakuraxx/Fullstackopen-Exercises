@@ -69,6 +69,23 @@ describe('Blog app', () => {
       const blogText0 = await hideWhenVisibleBlogs.nth(0).innerText();
       expect(blogText0).toContain(title);
     });
+
+    test('the blog can be liked', async ({page}) => {
+      await page.getByRole('button', { name: 'new blog' }).click();
+
+      const titleInput = page.locator('#title-input');
+      const urltInput = page.locator('#url-input');
+      const title = 'Test by Playwright';
+      await titleInput.fill(title);
+      await urltInput.fill('http://example.com');
+
+      await page.getByRole('button', { name: 'save' }).click();
+      await page.getByTestId('view').click();
+      await page.getByTestId('likeBtn').click();
+
+      await page.waitForTimeout(2000);
+      expect(await page.getByTestId('likes').innerText()).toContain('1');
+    });
   })
 
 });
