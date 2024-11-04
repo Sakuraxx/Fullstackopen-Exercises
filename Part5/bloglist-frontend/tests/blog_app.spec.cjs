@@ -48,4 +48,27 @@ describe('Blog app', () => {
     });
   });
 
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByTestId('username').fill('cactus');
+      await page.getByTestId('password').fill('sekret');
+      await page.getByRole('button', { name: 'login' }).click();
+    });
+
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'new blog' }).click();
+
+      const titleInput = page.locator('#title-input');
+      const urltInput = page.locator('#url-input');
+      const title = 'Test by Playwright';
+      await titleInput.fill(title);
+      await urltInput.fill('http://example.com');
+
+      await page.getByRole('button', { name: 'save' }).click();
+      const hideWhenVisibleBlogs = page.locator('.hideWhenVisible');
+      const blogText0 = await hideWhenVisibleBlogs.nth(0).innerText();
+      expect(blogText0).toContain(title);
+    });
+  })
+
 });
