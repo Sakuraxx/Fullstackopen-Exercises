@@ -1,12 +1,11 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { increateVotes} from '../reducers/anecdoteReducer'
 
 const AnecdoteList = () => {
     const anecdotes = useSelector(({anecdotes, filter}) => {
       if(filter == '') {
         return anecdotes;
       }
-      console.log('!',anecdotes);
+      console.log(anecdotes, filter)
       return anecdotes.filter(anecdote => anecdote.content.includes(filter));
     })
 
@@ -14,7 +13,7 @@ const AnecdoteList = () => {
 
     const vote = (id) => {
         console.log('vote', id)
-        dispatch(increateVotes(id))
+        dispatch({ type: 'anecdotes/vote', payload: {id} })
     }
 
     return (
