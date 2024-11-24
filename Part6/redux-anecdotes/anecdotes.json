@@ -39,6 +39,11 @@
       "id": "cb19",
       "content": "This is a second new anecdote",
       "vote": 0
+    },
+    {
+      "id": "2aee",
+      "content": "Third one",
+      "vote": 0
     }
   ]
 }
