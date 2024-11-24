@@ -34,6 +34,11 @@
       "id": "e34c",
       "content": "This is a new note",
       "vote": 0
+    },
+    {
+      "id": "cb19",
+      "content": "This is a second new anecdote",
+      "vote": 0
     }
   ]
 }
