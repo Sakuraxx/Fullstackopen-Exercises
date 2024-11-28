@@ -5,17 +5,21 @@ import { getAnecdotes } from './service/request'
 
 const App = () => {
 
-  const result = useQuery({
+  const { isPending, isError, data, error } = useQuery({
     queryKey: ['anecdotes'],
-    queryFn: getAnecdotes
+    queryFn: getAnecdotes,
+    retry: 2
   })
-  console.log(JSON.parse(JSON.stringify(result)))
 
-  if ( result.isLoading ) {
+  if (isPending) {
     return <div>loading data...</div>
   }
 
-  const anecdotes = result.data
+  if (isError) {
+    return <span>anecdote service not available due to {error.message}</span>
+  }
+
+  const anecdotes = data
 
   const handleVote = (anecdote) => {
     console.log('vote')
