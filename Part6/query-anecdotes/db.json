@@ -42,8 +42,13 @@
     },
     {
       "content": "New note",
-      "votes": 0,
+      "votes": 1,
       "id": "U9__P_9"
+    },
+    {
+      "content": "Another new anecdote",
+      "votes": 0,
+      "id": "r27emSJ"
     }
   ]
 }
