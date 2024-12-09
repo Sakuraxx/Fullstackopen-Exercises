@@ -1,6 +1,7 @@
 import {
   Routes, Route, Link,
-  useMatch
+  useMatch,
+  useNavigate
 } from 'react-router-dom'
 
 import { useState } from 'react'
@@ -57,6 +58,7 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -66,6 +68,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    navigate('/')
   }
 
   return (
@@ -114,6 +117,10 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`Hah, A new anecdote ${anecdote} created!`)
+    setTimeout(()=>{
+      setNotification('')
+    }, 5000);
   }
 
   const anecdoteById = (id) =>
