@@ -1,37 +1,36 @@
-import { useState } from 'react';
+import useField from '../hooks';
 
 const BlogForm = ({ createBlog }) => {
-  const [newTitle, setNewTitle] = useState('');
-  const [newURL, setNewURL] = useState('');
-
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value);
-  };
-
-  const handleURLChange = (event) => {
-    setNewURL(event.target.value);
-  };
+  const titleFiled = useField('text');
+  const urlField = useField('text');
 
   const onSubmit = (event) => {
     event.preventDefault();
 
     const newBlog = {
-      title: newTitle,
-      url: newURL,
+      title: titleFiled.value,
+      url: urlField.value,
     };
 
     createBlog(newBlog);
 
-    setNewTitle('');
-    setNewURL('');
+    titleFiled.reset();
+    urlField.reset();
   };
 
   return (
     <form onSubmit={onSubmit}>
       <label>Title:</label>
-      <input value={newTitle} onChange={handleTitleChange} id='title-input'/>
+      <input id='title-input'
+        value={titleFiled.value}
+        type={titleFiled.type}
+        onChange={titleFiled.onChange} />
+
       <label>URL:</label>
-      <input value={newURL} onChange={handleURLChange} id='url-input'/>
+      <input id='url-input'
+        value={urlField.value}
+        type={urlField.type}
+        onChange={urlField.onChange} />
       <button type="submit">save</button>
     </form>
   );
