@@ -5,11 +5,15 @@ import loginService from './services/login';
 import Togglable from './components/Togglable';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
+import Notification from './components/Notification';
+import { setTimedNotification } from './reducers/notificationReducer';
+import { useDispatch } from 'react-redux'
 
 const App = () => {
-  const [errorMessage, setErrorMessage] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
@@ -42,24 +46,19 @@ const App = () => {
       // Update blogs after logging
       blogService.getAll().then((blogs) => setBlogs(blogs));
     } catch (exception) {
-      setErrorMessage('Wrong credentials');
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      dispatch(setTimedNotification('Wrong credentials', 5000));
     }
   };
 
-  const addBlog = async (newBlog) => {
+  const addBlog = async (nBlog) => {
     try {
-      newBlog.author = user.username;
+      nBlog.author = user.username;
       blogService
-        .create(newBlog)
+        .create(nBlog)
         .then((returnedBlogs) => setBlogs(blogs.concat(returnedBlogs)));
+      dispatch(setTimedNotification(`Added blog '${nBlog.title}'`, 5000));
     } catch (exception) {
-      setErrorMessage(exception);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      setTimedNotification(exception, 5000);
     }
   };
 
@@ -67,11 +66,9 @@ const App = () => {
     try {
       await blogService.update(uBlog.id, uBlog);
       blogService.getAll().then((blogs) => setBlogs(blogs));
+      dispatch(setTimedNotification(`Updated blog '${uBlog.title}'`, 5000));
     } catch (exception) {
-      setErrorMessage(exception);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      dispatch(setTimedNotification(exception, 5000));
     }
   };
 
@@ -79,17 +76,15 @@ const App = () => {
     try {
       await blogService.remove(rBlog.id);
       blogService.getAll().then((blogs) => setBlogs(blogs));
+      dispatch(setTimedNotification(`Deleted blog '${rBlog.title}'`, 5000));
     } catch (exception) {
-      setErrorMessage(exception);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      dispatch(setTimedNotification(exception, 5000));
     }
   };
 
   return (
     <div>
-      <div>{errorMessage}</div>
+      <Notification />
       {user === null ? (
         <LoginForm login={loginUser}></LoginForm>
       ) : (
