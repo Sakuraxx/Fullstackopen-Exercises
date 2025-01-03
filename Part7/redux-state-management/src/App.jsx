@@ -8,7 +8,7 @@ import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import { setTimedNotification } from './reducers/notificationReducer';
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs } from './reducers/blogReducer';
+import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -57,9 +57,7 @@ const App = () => {
   const addBlog = async (nBlog) => {
     try {
       nBlog.author = user.username;
-      blogService
-        .create(nBlog)
-        .then((returnedBlogs) => setBlogs(blogs.concat(returnedBlogs)));
+      dispatch(createBlog(nBlog))
       dispatch(setTimedNotification(`Added blog '${nBlog.title}'`, 5000));
     } catch (exception) {
       setTimedNotification(exception, 5000);
@@ -68,18 +66,16 @@ const App = () => {
 
   const updateBlog = async (uBlog) => {
     try {
-      await blogService.update(uBlog.id, uBlog);
-      blogService.getAll().then((blogs) => setBlogs(blogs));
+      dispatch(likeBlog(uBlog))
       dispatch(setTimedNotification(`Updated blog '${uBlog.title}'`, 5000));
     } catch (exception) {
       dispatch(setTimedNotification(exception, 5000));
     }
   };
 
-  const removeBlog = async (rBlog) => {
+  const removeBlg = async (rBlog) => {
     try {
-      await blogService.remove(rBlog.id);
-      blogService.getAll().then((blogs) => setBlogs(blogs));
+      dispatch(removeBlog(rBlog))
       dispatch(setTimedNotification(`Deleted blog '${rBlog.title}'`, 5000));
     } catch (exception) {
       dispatch(setTimedNotification(exception, 5000));
@@ -100,7 +96,7 @@ const App = () => {
           </Togglable>
         </div>
       )}
-      <BlogList blogs={_blogs} remove={removeBlog} update={updateBlog}/>
+      <BlogList blogs={_blogs} remove={removeBlg} update={updateBlog}/>
     </div>
   );
 };

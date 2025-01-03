@@ -19,11 +19,12 @@ const Blog = ({ blog, update, remove }) => {
   };
 
   const handleLikes = (event) => {
-    let uBlog = blog;
-    uBlog.likes += 1;
-    // Note here, we can not pass a object
-    uBlog.user = blog.user.id;
-    update(uBlog);
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user.id,
+    };
+    update(updatedBlog);
   };
 
   const handleRemove = (event) => {
