@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import Blog from './components/Blog';
-import blogService from './services/blogs';
+import blogService from './services/blogService';
 import loginService from './services/login';
 import Togglable from './components/Togglable';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import { setTimedNotification } from './reducers/notificationReducer';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { initializeBlogs } from './reducers/blogReducer';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -25,8 +26,11 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  const _blogs = useSelector(({ blogs }) => blogs);
+  console.log('_blogs', _blogs)
 
   const handleLogout = (event) => {
     window.localStorage.removeItem('loggedBlogAppUser');
@@ -44,7 +48,7 @@ const App = () => {
       setUser(user);
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user));
       // Update blogs after logging
-      blogService.getAll().then((blogs) => setBlogs(blogs));
+      dispatch(initializeBlogs())
     } catch (exception) {
       dispatch(setTimedNotification('Wrong credentials', 5000));
     }
@@ -98,8 +102,7 @@ const App = () => {
       )}
 
       <h2>blogs</h2>
-      {blogs
-        .sort((first, second) => second.likes - first.likes)
+      {_blogs && _blogs
         .map((blog) => (
           <Blog
             key={blog.id}
