@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Blog from './components/Blog';
+import BlogList from './components/BlogList';
 import blogService from './services/blogService';
 import loginService from './services/login';
 import Togglable from './components/Togglable';
@@ -100,17 +100,7 @@ const App = () => {
           </Togglable>
         </div>
       )}
-
-      <h2>blogs</h2>
-      {_blogs && _blogs
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            update={updateBlog}
-            remove={removeBlog}
-          />
-        ))}
+      <BlogList blogs={_blogs} remove={removeBlog} update={updateBlog}/>
     </div>
   );
 };
