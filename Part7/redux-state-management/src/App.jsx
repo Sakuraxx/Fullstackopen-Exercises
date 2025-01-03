@@ -8,10 +8,9 @@ import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import { setTimedNotification } from './reducers/notificationReducer';
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer';
+import { initializeBlogs, createBlog, likeBlog, removeBlog, clear } from './reducers/blogReducer';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
 
   const dispatch = useDispatch();
@@ -29,13 +28,13 @@ const App = () => {
     dispatch(initializeBlogs())
   }, [dispatch])
 
-  const _blogs = useSelector(({ blogs }) => blogs);
-  console.log('_blogs', _blogs)
+  const blogs = useSelector(({ blogs }) => blogs)
+  console.log('blogs', blogs)
 
   const handleLogout = (event) => {
-    window.localStorage.removeItem('loggedBlogAppUser');
-    setUser(null);
-    setBlogs([]);
+    window.localStorage.removeItem('loggedBlogAppUser')
+    setUser(null)
+    dispatch(clear())
   };
 
   const loginUser = async (username, password) => {
@@ -96,7 +95,7 @@ const App = () => {
           </Togglable>
         </div>
       )}
-      <BlogList blogs={_blogs} remove={removeBlg} update={updateBlog}/>
+      <BlogList blogs={blogs} remove={removeBlg} update={updateBlog}/>
     </div>
   );
 };
