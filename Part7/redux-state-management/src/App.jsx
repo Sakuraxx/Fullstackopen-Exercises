@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import BlogList from './components/BlogList';
 import blogService from './services/blogService';
 import loginService from './services/login';
@@ -9,17 +9,16 @@ import Notification from './components/Notification';
 import { setTimedNotification } from './reducers/notificationReducer';
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs, createBlog, likeBlog, removeBlog, clear } from './reducers/blogReducer';
+import { login, logout } from './reducers/loginReducer'
 
 const App = () => {
-  const [user, setUser] = useState(null);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      dispatch(login(user));
       blogService.setToken(user.token);
     }
   }, []);
@@ -31,9 +30,12 @@ const App = () => {
   const blogs = useSelector(({ blogs }) => blogs)
   console.log('blogs', blogs)
 
+  const userLogin = useSelector(state => state.login)
+  console.log('login user', userLogin);
+
   const handleLogout = (event) => {
     window.localStorage.removeItem('loggedBlogAppUser')
-    setUser(null)
+    dispatch(logout());
     dispatch(clear())
   };
 
@@ -44,7 +46,7 @@ const App = () => {
         password,
       });
       blogService.setToken(user.token);
-      setUser(user);
+      dispatch(login(user));
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user));
       // Update blogs after logging
       dispatch(initializeBlogs())
@@ -55,7 +57,7 @@ const App = () => {
 
   const addBlog = async (nBlog) => {
     try {
-      nBlog.author = user.username;
+      nBlog.author = userLogin.username;
       dispatch(createBlog(nBlog))
       dispatch(setTimedNotification(`Added blog '${nBlog.title}'`, 5000));
     } catch (exception) {
@@ -84,11 +86,11 @@ const App = () => {
   return (
     <div>
       <Notification />
-      {user === null ? (
+      {userLogin === null ? (
         <LoginForm login={loginUser}></LoginForm>
       ) : (
         <div>
-          <p>{user.username} logged-in</p>
+          <p>{userLogin.username} logged-in</p>
           <button onClick={handleLogout}>logout</button>
           <Togglable buttonLabel="new blog">
             <BlogForm createBlog={addBlog}></BlogForm>
