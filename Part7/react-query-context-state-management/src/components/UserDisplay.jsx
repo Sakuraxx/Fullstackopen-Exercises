@@ -4,12 +4,13 @@ import blogService from '../services/blogService';
 import loginService from '../services/login';
 import { login, logout } from '../reducers/loginReducer';
 import { initializeBlogs, clear } from '../reducers/blogReducer';
-import { setTimedNotification } from '../reducers/notificationReducer';
 import LoginForm from '../components/LoginForm';
 import TogglableBlogForm from './TogglableBlogForm';
+import { useNotificationDispatch } from './NotificationContext';
 
 const UserDisplay = () => {
   const dispatch = useDispatch();
+  const notificationDispatch = useNotificationDispatch();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
@@ -36,7 +37,8 @@ const UserDisplay = () => {
       // Update blogs after logging
       dispatch(initializeBlogs())
     } catch (exception) {
-      dispatch(setTimedNotification('Wrong credentials', 5000));
+      notificationDispatch({ type: 'NORMAL', payload: 'Wrong credentials' });
+      setTimeout(() => {notificationDispatch({ type: 'CLEAR' });}, 5000);
     }
   };
 

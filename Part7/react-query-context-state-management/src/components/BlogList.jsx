@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import Blog from './Blog';
 import { initializeBlogs, likeBlog, removeBlog } from '../reducers/blogReducer';
-import { setTimedNotification } from '../reducers/notificationReducer';
+import { useNotificationDispatch } from './NotificationContext';
 
 const BlogList = () => {
-
   const dispatch = useDispatch();
+  const notificationDispatch = useNotificationDispatch();
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -18,18 +18,23 @@ const BlogList = () => {
   const updateBlog = async (uBlog) => {
     try {
       dispatch(likeBlog(uBlog))
-      dispatch(setTimedNotification(`Updated blog '${uBlog.title}'`, 5000));
+      notificationDispatch({ type: 'NORMAL', payload: `Updated blog '${uBlog.title}'` });
+      setTimeout(() => {notificationDispatch({ type: 'CLEAR' });}, 5000);
+
     } catch (exception) {
-      dispatch(setTimedNotification(exception, 5000));
+      notificationDispatch({ type: 'NORMAL', payload: exception });
+      setTimeout(() => {notificationDispatch({ type: 'CLEAR' });}, 5000);
     }
   };
 
   const removeBlg = async (rBlog) => {
     try {
-      dispatch(removeBlog(rBlog))
-      dispatch(setTimedNotification(`Deleted blog '${rBlog.title}'`, 5000));
+      dispatch(removeBlog(rBlog));
+      notificationDispatch({ type: 'NORMAL', payload: `Deleted blog '${rBlog.title}'` });
+      setTimeout(() => {notificationDispatch({ type: 'CLEAR' });}, 5000);
     } catch (exception) {
-      dispatch(setTimedNotification(exception, 5000));
+      notificationDispatch({ type: 'NORMAL', payload: exception });
+      setTimeout(() => {notificationDispatch({ type: 'CLEAR' });}, 5000);
     }
   };
 
