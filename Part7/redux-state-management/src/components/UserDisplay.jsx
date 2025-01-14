@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import blogService from '../services/blogService';
 import loginService from '../services/login';
 import { login, logout } from '../reducers/loginReducer';
-import { initializeBlogs, createBlog, clear } from '../reducers/blogReducer';
+import { initializeBlogs, clear } from '../reducers/blogReducer';
 import { setTimedNotification } from '../reducers/notificationReducer';
 import LoginForm from '../components/LoginForm';
-import BlogForm from '../components/BlogForm';
-import Togglable from '../components/Togglable';
+import TogglableBlogForm from './TogglableBlogForm';
 
 const UserDisplay = () => {
   const dispatch = useDispatch();
@@ -47,16 +46,6 @@ const UserDisplay = () => {
     dispatch(clear())
   };
 
-  const addBlog = async (nBlog) => {
-    try {
-      nBlog.author = userLogin.username;
-      dispatch(createBlog(nBlog))
-      dispatch(setTimedNotification(`Added blog '${nBlog.title}'`, 5000));
-    } catch (exception) {
-      setTimedNotification(exception, 5000);
-    }
-  };
-
   return (
     <>
       {userLogin === null ? (
@@ -65,9 +54,7 @@ const UserDisplay = () => {
         <div>
           <p>{userLogin.username} logged-in</p>
           <button onClick={handleLogout}>logout</button>
-          <Togglable buttonLabel="new blog">
-            <BlogForm createBlog={addBlog}></BlogForm>
-          </Togglable>
+          <TogglableBlogForm username={userLogin.username}/>
         </div>
       )}
     </>
