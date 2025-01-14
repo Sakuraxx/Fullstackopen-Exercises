@@ -1,4 +1,4 @@
-import { useNotificationValue } from './NotificationContext'
+import { useNotificationValue } from './NotificationContext';
 
 const Notification = () => {
   const notification = useNotificationValue();
@@ -16,6 +16,6 @@ const Notification = () => {
       {notification}
     </div>
   );
-}
+};
 
 export default Notification;

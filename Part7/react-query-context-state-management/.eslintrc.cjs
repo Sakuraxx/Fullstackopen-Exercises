@@ -21,6 +21,7 @@ module.exports = {
       "error",
       2
     ],
+    "semi": ["error", "always"],
     "linebreak-style": [
       "error",
       "unix"
