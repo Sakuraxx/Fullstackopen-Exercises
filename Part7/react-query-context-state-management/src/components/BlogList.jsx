@@ -1,23 +1,36 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux';
 import Blog from './Blog';
-import { initializeBlogs, likeBlog, removeBlog } from '../reducers/blogReducer';
+import { likeBlog, removeBlog } from '../reducers/blogReducer';
 import { useNotificationDispatch } from './NotificationContext';
+import { useQuery } from '@tanstack/react-query';
+import blogService from '../services/blogService';
 
 const BlogList = () => {
   const dispatch = useDispatch();
   const notificationDispatch = useNotificationDispatch();
 
-  useEffect(() => {
-    dispatch(initializeBlogs())
-  }, [dispatch])
+  // react useQuery
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+    retry: 2
+  });
 
-  const blogs = useSelector(({ blogs }) => blogs)
-  console.log('blogs', blogs)
+  console.log('useQuery', data);
+
+  if (isPending) {
+    return <div>loading data...</div>;
+  }
+
+  if (isError) {
+    return <span>blogs service not available due to {error.message}</span>;
+  }
+
+  const blogs = data;
 
   const updateBlog = async (uBlog) => {
     try {
-      dispatch(likeBlog(uBlog))
+      dispatch(likeBlog(uBlog));
       notificationDispatch({ type: 'NORMAL', payload: `Updated blog '${uBlog.title}'` });
       setTimeout(() => {notificationDispatch({ type: 'CLEAR' });}, 5000);
 
@@ -51,6 +64,6 @@ const BlogList = () => {
           />
         ))}
     </>
-  )
-}
-export default BlogList
+  );
+};
+export default BlogList;
