@@ -1,11 +1,9 @@
-import { useDispatch } from 'react-redux';
 import Blog from './Blog';
 import { useNotificationDispatch } from './NotificationContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import blogService from '../services/blogService';
 
 const BlogList = () => {
-  const dispatch = useDispatch();
   const notificationDispatch = useNotificationDispatch();
 
   // update - useMutation
