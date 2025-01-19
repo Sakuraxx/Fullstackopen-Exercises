@@ -2,12 +2,22 @@ import { useDispatch } from 'react-redux';
 import Blog from './Blog';
 import { likeBlog, removeBlog } from '../reducers/blogReducer';
 import { useNotificationDispatch } from './NotificationContext';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import blogService from '../services/blogService';
 
 const BlogList = () => {
   const dispatch = useDispatch();
   const notificationDispatch = useNotificationDispatch();
+
+  // update - useMutation
+  const queryClient = useQueryClient();
+  const updateBlogMutation = useMutation({
+    mutationFn: blogService.update,
+    onSuccess: () => {
+      // try data update if invalid
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+    },
+  });
 
   // react useQuery
   const { isPending, isError, data, error } = useQuery({
@@ -30,7 +40,7 @@ const BlogList = () => {
 
   const updateBlog = async (uBlog) => {
     try {
-      dispatch(likeBlog(uBlog));
+      updateBlogMutation.mutate(uBlog);
       notificationDispatch({ type: 'NORMAL', payload: `Updated blog '${uBlog.title}'` });
       setTimeout(() => {notificationDispatch({ type: 'CLEAR' });}, 5000);
 
