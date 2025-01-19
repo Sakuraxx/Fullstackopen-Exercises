@@ -22,7 +22,7 @@ const UserDisplay = () => {
   }, []);
 
 
-  const userLogin = useSelector(state => state.login)
+  const userLogin = useSelector(state => state.login);
   console.log('login user', userLogin);
 
   const loginUser = async (username, password) => {
@@ -35,7 +35,7 @@ const UserDisplay = () => {
       dispatch(login(user));
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user));
       // Update blogs after logging
-      dispatch(initializeBlogs())
+      dispatch(initializeBlogs());
     } catch (exception) {
       notificationDispatch({ type: 'NORMAL', payload: 'Wrong credentials' });
       setTimeout(() => {notificationDispatch({ type: 'CLEAR' });}, 5000);
@@ -43,9 +43,9 @@ const UserDisplay = () => {
   };
 
   const handleLogout = (event) => {
-    window.localStorage.removeItem('loggedBlogAppUser')
+    window.localStorage.removeItem('loggedBlogAppUser');
     dispatch(logout());
-    dispatch(clear())
+    dispatch(clear());
   };
 
   return (
@@ -61,6 +61,6 @@ const UserDisplay = () => {
       )}
     </>
   );
-}
+};
 
 export default UserDisplay;

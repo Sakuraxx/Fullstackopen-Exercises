@@ -11,7 +11,7 @@ const TogglableBlogForm = ({ username }) => {
   const addBlog = async (nBlog) => {
     try {
       nBlog.author = username;
-      dispatch(createBlog(nBlog))
+      dispatch(createBlog(nBlog));
       notificationDispatch({ type: 'NORMAL', payload: `Added blog '${nBlog.title}'` });
       setTimeout(() => {notificationDispatch({ type: 'CLEAR' });}, 5000);
     } catch (exception) {
@@ -26,7 +26,7 @@ const TogglableBlogForm = ({ username }) => {
         <BlogForm createBlog={addBlog}></BlogForm>
       </Togglable>
     </>
-  )
-}
+  );
+};
 
 export default TogglableBlogForm;
