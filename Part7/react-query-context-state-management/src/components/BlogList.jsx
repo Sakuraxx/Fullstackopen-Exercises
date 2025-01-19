@@ -1,6 +1,5 @@
 import { useDispatch } from 'react-redux';
 import Blog from './Blog';
-import { likeBlog, removeBlog } from '../reducers/blogReducer';
 import { useNotificationDispatch } from './NotificationContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import blogService from '../services/blogService';
@@ -13,6 +12,15 @@ const BlogList = () => {
   const queryClient = useQueryClient();
   const updateBlogMutation = useMutation({
     mutationFn: blogService.update,
+    onSuccess: () => {
+      // try data update if invalid
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+    },
+  });
+
+  // delete - useMutation
+  const deleteBlogMutation = useMutation({
+    mutationFn: blogService.remove,
     onSuccess: () => {
       // try data update if invalid
       queryClient.invalidateQueries({ queryKey: ['blogs'] });
@@ -52,7 +60,7 @@ const BlogList = () => {
 
   const removeBlg = async (rBlog) => {
     try {
-      dispatch(removeBlog(rBlog));
+      deleteBlogMutation.mutate(rBlog.id);
       notificationDispatch({ type: 'NORMAL', payload: `Deleted blog '${rBlog.title}'` });
       setTimeout(() => {notificationDispatch({ type: 'CLEAR' });}, 5000);
     } catch (exception) {
