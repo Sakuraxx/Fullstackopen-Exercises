@@ -5,7 +5,7 @@ import {
   Routes, Route
 } from 'react-router-dom'
 
-import UserList from './components/Users'
+import {UserList, UserBlogList} from './components/Users'
 
 const App = () => {
   return (
@@ -13,11 +13,12 @@ const App = () => {
       <div>
         <Notification />
         <UserDisplay/>
-        <BlogList/>
+        {/* <BlogList/> */}
       </div>
 
       <Routes>
         <Route path="/users" element={<UserList/>} />
+        <Route path="/users/:id" element={<UserBlogList/>} />
       </Routes>
 
     </>
