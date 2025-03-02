@@ -3,8 +3,8 @@ import Select from 'react-select'
 import { useState } from "react";
 import { ALL_AUTHORS, Edit_AUTHOR } from './queries'
 
-const Authors = (props) => {
-  if (!props.show) {
+const Authors = ({show, setError}) => {
+  if (!show) {
     return null
   }
 
@@ -13,7 +13,11 @@ const Authors = (props) => {
   
   const result = useQuery(ALL_AUTHORS)
   const [ editAuthor ] = useMutation(Edit_AUTHOR, {
-    refetchQueries: [ { query: ALL_AUTHORS } ]
+    refetchQueries: [ { query: ALL_AUTHORS } ],
+    onError: (error) => {
+      const messages = error.graphQLErrors.map(e => e.message).join('\n')
+      setError(messages)
+    }
   })
 
   console.log('author', result)
