@@ -22,7 +22,7 @@ const Authors = ({show, setError}) => {
 
   console.log('author', result)
 
-  if (result.loading) {
+  if (result.loading || result.data === undefined) {
     return <div>loading...</div>
   }
 

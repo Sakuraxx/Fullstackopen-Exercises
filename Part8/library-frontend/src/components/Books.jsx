@@ -6,15 +6,21 @@ const Books = (props) => {
     return null
   }
 
-  const result = useQuery(ALL_BOOKS)
+  const {loading, error, data} = useQuery(ALL_BOOKS, {
+    variables: {genre: ""},
+  })
 
-  console.log('books', result)
+  console.log('books', data)
 
-  if (result.loading) {
+  if(loading) {
     return <div>loading...</div>
   }
 
-  const books = result.data.allBooks
+  if (error) {
+    return <p>Error loading books: {error.message}</p>;
+  }
+
+  const books = data?.allBooks || [];
 
   return (
     <div>
@@ -30,7 +36,7 @@ const Books = (props) => {
           {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
-              <td>{a.author}</td>
+              <td>{a.author.name}</td>
               <td>{a.published}</td>
             </tr>
           ))}

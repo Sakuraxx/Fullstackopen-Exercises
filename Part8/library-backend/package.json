@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "library-backend.js",
   "scripts": {
+    "start": "node library-backend.js", 
+    "dev": "nodemon library-backend.js", 
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -16,5 +18,8 @@
     "mongoose": "^7.8.6",
     "mongoose-unique-validator": "^4.0.1",
     "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
