@@ -54,6 +54,7 @@ const typeDefs = `
     allBooks(genre: String): [Book!]!
     allAuthor: [Author!]!
     me: User
+    allGenres: [String!]!
   }
 
   type Mutation {
@@ -91,7 +92,11 @@ const resolvers = {
     },
     me: (root, args, context) => {
       return context.currentUser
-    }
+    },
+    allGenres: async () => {
+      const genres = await Book.distinct('genres');
+      return genres;
+    },
   },
 
   Author: {

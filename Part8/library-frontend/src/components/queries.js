@@ -66,3 +66,8 @@ query Me {
   }
 }
 `
+export const ALL_GENRES = gql`
+query AllGenres {
+  allGenres
+}
+`
