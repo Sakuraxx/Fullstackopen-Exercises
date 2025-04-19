@@ -3,7 +3,7 @@ import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
-
+import FavoriteBooks from "./components/FavoriteBooks";
 const App = () => {
   const [page, setPage] = useState("authors");
   const [errorMessage, setErrorMessage] = useState(null)
@@ -37,13 +37,16 @@ const App = () => {
         {!token && <button onClick={() => setPage("login")}>login</button>}
 
         {token && <button onClick={() => setPage("add")}>add book</button>}
-        {token && <button onClick={() => setToken(null)}>logout</button>}
+        {token && <button onClick={() => setPage("recommendations")}>recommendations</button>}
+        {token && <button onClick={() => {setToken(null); localStorage.clear(); setPage("books")}}>logout</button>}
       </div>
       <Notify errorMessage={errorMessage} />
 
       <Authors show={page === "authors"} setError={notify}/>
 
       <Books show={page === "books"} />
+
+      <FavoriteBooks show={page === "recommendations"} token={token}/>
 
       <NewBook show={page === "add"} setError={notify}/>
 

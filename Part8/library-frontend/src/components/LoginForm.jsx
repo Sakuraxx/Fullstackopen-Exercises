@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useMutation } from '@apollo/client'
+import { useMutation, useApolloClient } from '@apollo/client'
 import { LOGIN } from './queries'
 
 const LoginForm = ({ show, setError, setToken, setPage }) => {
@@ -9,7 +9,8 @@ const LoginForm = ({ show, setError, setToken, setPage }) => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
+  
+  const client = useApolloClient();
 
   const [ login, result ] = useMutation(LOGIN, {
     onError: (error) => {
@@ -23,9 +24,10 @@ const LoginForm = ({ show, setError, setToken, setPage }) => {
       const token = result.data.login.value
       setToken(token)
       localStorage.setItem('bookapp-user-token', token)
+      client.resetStore(); // clear cache
       setPage('books')
     }
-  }, [result.data])
+  }, [result.data, setToken, setPage])
 
   const submit = async (event) => {
     event.preventDefault()
