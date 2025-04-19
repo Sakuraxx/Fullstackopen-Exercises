@@ -8,22 +8,32 @@ const App = () => {
   const [page, setPage] = useState("authors");
   const [errorMessage, setErrorMessage] = useState(null)
   const [token, setToken] = useState(null)
+  const [notification, setNotification] = useState(null)
 
-  const notify = (message) => {
+  const errNotify = (message) => {
     setErrorMessage(message)
     setTimeout(() => {
       setErrorMessage(null)
     }, 5000)
   }
+
+  const infoNotify = (message) => {
+    setNotification(message)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
+
   
-  const Notify = ({errorMessage}) => {
-    if ( !errorMessage ) {
+  const Notify = ({errorMessage, notification}) => {
+    if ( !errorMessage && !notification ) {
       return null
     }
     return (
-      <div style={{color: 'red'}}>
-      {errorMessage}
-      </div>
+      <>
+        <div style={{color: 'red'}}>{errorMessage}</div>
+        <div style={{color: 'green'}}>{notification}</div>
+      </>
     )
   }
 
@@ -40,17 +50,17 @@ const App = () => {
         {token && <button onClick={() => setPage("recommendations")}>recommendations</button>}
         {token && <button onClick={() => {setToken(null); localStorage.clear(); setPage("books")}}>logout</button>}
       </div>
-      <Notify errorMessage={errorMessage} />
+      <Notify errorMessage={errorMessage} notification={notification} />
 
-      <Authors show={page === "authors"} setError={notify}/>
+      <Authors show={page === "authors"} setError={errNotify}/>
 
-      <Books show={page === "books"} />
+      <Books show={page === "books"}/>
 
       <FavoriteBooks show={page === "recommendations"} token={token}/>
 
-      <NewBook show={page === "add"} setError={notify}/>
+      <NewBook show={page === "add"} setError={errNotify} setNotification={infoNotify} token={token}/>
 
-      <LoginForm show={page == "login"} setError={notify} setToken={setToken} setPage={setPage}/>
+      <LoginForm show={page == "login"} setError={errNotify} setToken={setToken} setPage={setPage}/>
 
     </div>
   );

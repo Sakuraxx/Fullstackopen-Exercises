@@ -9,7 +9,7 @@ const LoginForm = ({ show, setError, setToken, setPage }) => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  
+
   const client = useApolloClient();
 
   const [ login, result ] = useMutation(LOGIN, {
@@ -21,10 +21,10 @@ const LoginForm = ({ show, setError, setToken, setPage }) => {
 
   useEffect(() => {
     if ( result.data ) {
+      client.resetStore(); // clear cache
       const token = result.data.login.value
       setToken(token)
       localStorage.setItem('bookapp-user-token', token)
-      client.resetStore(); // clear cache
       setPage('books')
     }
   }, [result.data, setToken, setPage])

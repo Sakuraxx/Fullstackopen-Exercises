@@ -106,7 +106,7 @@ const resolvers = {
   },
   
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
       let author = await Author.findOne({ name: args.author })
 
       try {
@@ -212,15 +212,23 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
   listen: { port: 4000 },
 
-  context: async ({ req, res }) => {
-    const auth = req ? req.headers.authorization : null
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null;
+    console.log('>>> Context: Auth header:', auth); // Log header
     if (auth && auth.startsWith('Bearer ')) {
-      const decodedToken = jwt.verify(
-        auth.substring(7), process.env.JWT_SECRET
-      )
-      const currentUser = await User.findById(decodedToken.id)
-      return { currentUser }
+      try {
+        const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET);
+        console.log('>>> Context: Token decoded:', decodedToken); // Log decoded payload
+        const currentUser = await User.findById(decodedToken.id);
+        console.log('>>> Context: Current user found:', currentUser); // Log found user
+        return { currentUser };
+      } catch (error) {
+        console.error('>>> Context: Token verification failed:', error.message); // Log error
+        return {};
+      }
     }
+    console.log('>>> Context: No valid Bearer token found.');
+    return {}; // No token, return empty context
   },
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`)
