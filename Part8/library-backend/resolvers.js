@@ -11,6 +11,7 @@ const resolvers = {
       bookCount: async () => Book.collection.countDocuments(), 
       authorCount: async () => Author.collection.countDocuments(),
       allAuthor: async (root, args) => {
+          console.log('[Query] allAuthor.find')
           return await Author.find({})
       },
       allBooks: async (root, args) => {
@@ -27,9 +28,10 @@ const resolvers = {
     },
   
     Author: {
-      bookCount: async (root) => {
-        return await Book.countDocuments({ author: root._id })
-      }
+        bookCount: async (author, args, context) => {
+            console.log(`[Author Resolver] Requesting book count for author ID: ${author._id}`);
+            return context.loaders.bookCount.load(author._id);
+        }
     },
     
     Mutation: {

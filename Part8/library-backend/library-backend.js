@@ -15,12 +15,17 @@ const mongoose = require('mongoose')
 
 const User = require('./models/user')
 
+const Book = require('./models/book')
+
 mongoose.set('strictQuery', false)
 
 const typeDefs = require('./schema')
 const resolvers = require('./resolvers')
 
 require('dotenv').config()
+
+// Import DataLoader
+const DataLoader = require('dataloader');
 
 const MONGODB_URI = process.env.MONGODB_URI 
 
@@ -33,6 +38,45 @@ mongoose.connect(MONGODB_URI)
   .catch((error) => {
     console.log('error connection to MongoDB:', error.message)
   })
+
+
+// --- DataLoader Batch Function ---
+const batchAuthorsBookCount = async (authorIds) => {
+  try {
+    const bookCounts = await Book.aggregate([
+      { $match: { author: { $in: authorIds } } },
+      { $group: { _id: '$author', count: { $sum: 1 } } }
+    ]);
+
+    console.log('[DataLoader] Aggregation result (bookCounts):', bookCounts);
+
+    const countMap = new Map();
+    bookCounts.forEach(item => {
+      const key = item._id.toString(); // Key is string representation of ObjectId
+      // console.log(`[DataLoader] Setting map: Key=${key}, Count=${item.count}`); // Log map setting
+      countMap.set(key, item.count);
+    });
+
+    // Log the final map
+    // console.log('[DataLoader] Final countMap:', countMap);
+
+    // Map the original IDs to their counts from the map
+    const finalCounts = authorIds.map(id => {
+      const key = id.toString(); // Lookup key is also string representation
+      const count = countMap.get(key) || 0; // Get count or default to 0
+      // console.log(`[DataLoader] Mapping ID ${key} to Count ${count}`); // Log mapping lookup
+      return count;
+    });
+
+    console.log('[DataLoader] Returning final counts:', finalCounts); // Log final result array
+    return finalCounts;
+
+  }catch (error) {
+    console.error('[DataLoader] Error fetching book counts:', error);
+    // Return an array of errors or default values, matching the input length
+    return authorIds.map(() => 0); // Or throw an error if appropriate
+  }
+};
 
 // setup is now within a function
 const start = async () => {
@@ -83,6 +127,13 @@ const start = async () => {
     '/',
     expressMiddleware(server, {
       context: async ({ req }) => {
+        // --- Create DataLoaders PER REQUEST ---
+        const loaders = {
+          bookCount: new DataLoader(batchAuthorsBookCount)
+        };
+
+        let contextObject = { loaders, currentUser: null }; // Start with loaders and null user
+
         const auth = req ? req.headers.authorization : null;
         console.log('>>> Context: Auth header:', auth); // Log header
         if (auth && auth.startsWith('Bearer ')) {
@@ -91,12 +142,15 @@ const start = async () => {
             console.log('>>> Context: Token decoded:', decodedToken); // Log decoded payload
             const currentUser = await User.findById(decodedToken.id);
             console.log('>>> Context: Current user found:', currentUser); // Log found user
-            return { currentUser };
+            if (currentUser) {
+              contextObject.currentUser = currentUser;
+            }
           } catch (error) {
             console.error('>>> Context: Token verification failed:', error.message); // Log error
-            return {};
           }
         }
+
+        return contextObject;
       },
     }),
   )
