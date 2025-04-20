@@ -74,3 +74,18 @@ query AllGenres {
   allGenres
 }
 `
+
+export const BOOK_ADDED = gql`
+subscription Subscription {
+  bookAdded {
+    title
+    author {
+      name
+      bookCount
+      born
+    }
+    published
+    genres
+  }
+}
+`

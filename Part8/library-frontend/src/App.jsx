@@ -4,11 +4,15 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import FavoriteBooks from "./components/FavoriteBooks";
+import { useSubscription, useApolloClient } from '@apollo/client'
+import { BOOK_ADDED, ALL_BOOKS } from "./components/queries";
+
 const App = () => {
   const [page, setPage] = useState("authors");
   const [errorMessage, setErrorMessage] = useState(null)
   const [token, setToken] = useState(null)
   const [notification, setNotification] = useState(null)
+  const client = useApolloClient();
 
   const errNotify = (message) => {
     setErrorMessage(message)
@@ -18,6 +22,7 @@ const App = () => {
   }
 
   const infoNotify = (message) => {
+    console.log('[info]', message)
     setNotification(message)
     setTimeout(() => {
       setNotification(null)
@@ -37,6 +42,24 @@ const App = () => {
     )
   }
 
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      if (!data || !data.data || !data.data.bookAdded) {
+        console.error("Subscription data received is invalid:", data);
+        return; 
+      }
+      const addedBook = data.data.bookAdded;
+      console.log('Subscription received:', addedBook); 
+  
+      infoNotify(`${addedBook.title} added`);
+
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(addedBook),
+        }
+      })
+    }
+  });
 
   return (
     <div>
