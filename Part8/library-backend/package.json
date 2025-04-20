@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "library-backend.js",
   "scripts": {
-    "start": "node library-backend.js", 
-    "dev": "nodemon library-backend.js", 
+    "start": "node library-backend.js",
+    "dev": "nodemon library-backend.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -12,7 +12,9 @@
   "description": "",
   "dependencies": {
     "@apollo/server": "^4.11.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "express": "^5.1.0",
     "graphql": "^16.10.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.8.6",
