@@ -2,6 +2,9 @@ const { ApolloServer } = require('@apollo/server')
 const { expressMiddleware } = require('@apollo/server/express4')
 const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
+const { WebSocketServer } = require('ws')
+const { useServer } = require('graphql-ws/lib/use/ws');
+
 const express = require('express')
 const cors = require('cors')
 const http = require('http')
@@ -36,17 +39,48 @@ const start = async () => {
   const app = express()
   const httpServer = http.createServer(app)
 
-  const server = new ApolloServer({
-    schema: makeExecutableSchema({ typeDefs, resolvers }),
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/',
   })
 
+  const schema = makeExecutableSchema({ typeDefs, resolvers })
+  const serverCleanup = useServer({
+    schema,
+    onConnect: (ctx) => {
+      console.log('[WebSocket Backend] Connected:', ctx.connectionParams);
+    },
+    onDisconnect: (ctx, code, reason) => {
+      console.log('[WebSocket Backend] Disconnected:', code, reason); 
+    },
+    onError: (ctx, msg, errors) => {
+      console.error('[WebSocket Backend] Error:', errors); 
+    },
+  }, wsServer);
+
+  const server = new ApolloServer({
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      }
+    ]
+  })
+  
   await server.start()
+
+  app.use(cors())
+  app.use(express.json())
 
   app.use(
     '/',
-    cors(),
-    express.json(),
     expressMiddleware(server, {
       context: async ({ req }) => {
         const auth = req ? req.headers.authorization : null;
