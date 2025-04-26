@@ -21,8 +21,6 @@ const calculateBmi = (height_cm: number, weight_kg: number): BMIResult =>
     }
 }
 
-export { calculateBmi };
-
 interface BmiValues {
   height: number;
   weight: number;
@@ -55,3 +53,5 @@ try {
   }
   console.error(errorMessage);
 }
+
+export { calculateBmi };

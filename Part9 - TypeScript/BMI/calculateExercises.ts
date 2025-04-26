@@ -86,3 +86,5 @@ try {
     }
     console.error(errorMessage);
 }
+
+export { calculateExercises, ExerciseRes };

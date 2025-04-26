@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import { calculateBmi } from './calculateBmi'; 
+import { calculateExercises, ExerciseRes } from './calculateExercises';
+
 const app = express();
 
 app.get('/hello', (_req: Request, res: Response) => {
@@ -37,6 +39,39 @@ app.get('/bmi', (req: Request, res: Response) => {
         
         return res.status(400).json({ error: errorMessage }); 
     }
+});
+
+app.use(express.json());
+
+app.post('/exercises', (req: Request, res: Response) => {
+    const { daily_exercises, target } = req.body;
+    
+    console.log('[post] req.body:', req.body);
+
+    if (daily_exercises === undefined || target === undefined) {
+        return res.status(400).json({ error: 'parameters missing' });
+    }
+
+    if (!Array.isArray(daily_exercises) || !daily_exercises.every(item => typeof item === 'number')) {
+        return res.status(400).json({ error: 'malformatted parameters: daily_exercises must be an array of numbers' });
+    }
+
+    if (typeof target !== 'number' || isNaN(target)) {
+        return res.status(400).json({ error: 'malformatted parameters: target must be a number' });
+    }
+
+    try {
+        const result: ExerciseRes = calculateExercises(target, daily_exercises);
+        return res.json(result);
+    } catch (error: unknown) {
+        let errorMessage = 'Exercises calculation failed.';
+        if (error instanceof Error) {
+            errorMessage += ' Error: ' + error.message; 
+        }
+        
+        return res.status(400).json({ error: errorMessage }); 
+    }
+
 });
 
 const PORT = 3003;
