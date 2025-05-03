@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', (_req: Request, res: Response) => {
   try {
-    const patients = patientService.getPatientEntries();
+    const patients = patientService.getNonSensitivePatinets();
     res.json(patients);
   } catch (error) {
     let errorMessage = 'Something went wrong.';
