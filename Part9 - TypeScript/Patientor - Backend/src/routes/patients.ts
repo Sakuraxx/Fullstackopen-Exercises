@@ -1,6 +1,6 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import patientService from '../services/patientService';
-import { NewPatient, newPatinetEntrySchema } from '../types/Patient';
+import { NewPatient, newPatinetEntrySchema, NonSensitivePatient } from '../types/Patient';
 import z from 'zod';
 
 const router = express.Router();
@@ -18,19 +18,28 @@ router.get('/', (_req: Request, res: Response) => {
   }
 });
 
-router.post('/', (_req: Request, res: Response) => {
-  try{
-    const patientObj: NewPatient = newPatinetEntrySchema.parse(_req.body);
-    const newPatient = patientService.addPatient(patientObj);
-    res.json(newPatient);
-  } catch(error) {
-    if (error instanceof z.ZodError) {
-      res.status(400).send({ error: error.issues });
-    } else {
-      res.status(400).send({ error: 'unknown error' });
-    }
+const newPatientParser = (req: Request, _res: Response, next: NextFunction) => { 
+  try {
+    newPatinetEntrySchema.parse(req.body)
+    next();
+  } catch (error: unknown) {
+    next(error);
   }
+};
 
+const errorMiddleware = (error: unknown, _req: Request, res: Response, next: NextFunction) => { 
+  if (error instanceof z.ZodError) {
+    res.status(400).send({ error: error.issues });
+  } else {
+    next(error);
+  }
+};
+
+router.post('/', newPatientParser, (req: Request<unknown, unknown, NewPatient>, res: Response<NonSensitivePatient>) => {
+  const newPatient = patientService.addPatient(req.body);
+  res.json(newPatient);
 });
+
+router.use(errorMiddleware);
 
 export default router;
