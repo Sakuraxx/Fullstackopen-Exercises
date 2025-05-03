@@ -16,4 +16,25 @@ router.get('/', (_req: Request, res: Response) => {
   }
 });
 
+router.post('/', (_req: Request, res: Response) => {
+
+  try{
+    
+    const {ssn, name, gender, occupation, dateOfBirth} = _req.body;
+
+    const newPatient = patientService.addPatient({ssn: ssn, name: name, gender: gender, occupation: occupation, dateOfBirth: dateOfBirth});
+
+    res.json(newPatient);
+
+  } catch(error) 
+  {
+    let errorMessage = 'Something went wrong.';
+    if (error instanceof Error) {
+      errorMessage += ' Error: ' + error.message;
+    }
+    res.status(500).send(errorMessage);
+  }
+
+});
+
 export default router;
