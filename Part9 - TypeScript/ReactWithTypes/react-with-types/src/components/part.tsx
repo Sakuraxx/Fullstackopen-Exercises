@@ -41,7 +41,15 @@ const Part = (partProps: PartProps) => {
               <div key={key}>
               <p><b>{c.name} {c.exerciseCount}</b></p>
               <p><i>{c.description}</i></p>
-              <p>{c.backgroundMaterial}</p>
+              <p>submit to {c.backgroundMaterial}</p>
+            </div>
+            );
+          case 'special':
+            return (
+              <div key={key}>
+              <p><b>{c.name} {c.exerciseCount}</b></p>
+              <p><i>{c.description}</i></p>
+              <p>required skills: {c.requirements.join(', ')}</p>
             </div>
             );
           default:

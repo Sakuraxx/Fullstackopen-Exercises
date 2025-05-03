@@ -32,6 +32,13 @@ const courseParts: CoursePart[] = [
     description: "a hard part",
     kind: "basic",
   },
+  {
+    name: "Backend development",
+    exerciseCount: 21,
+    description: "Typing the backend",
+    requirements: ["nodejs", "jest"],
+    kind: "special"
+  }
 ];
 
 export default courseParts;
