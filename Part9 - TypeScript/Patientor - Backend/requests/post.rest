@@ -1,0 +1,37 @@
+
+### Correct Data
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "cactusx",
+  "dateOfBirth": "1992-12-12",
+  "ssn": "123-123-123",
+  "gender": "female",
+  "occupation": "Programmer"
+}
+
+### Wrong Gender 
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "cactusx",
+  "dateOfBirth": "1992-12-12",
+  "ssn": "123-123-123",
+  "gender": "unknown",
+  "occupation": "Programmer"
+}
+
+
+### Wrong Date 
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "cactusx",
+  "dateOfBirth": "1992-xxx-12",
+  "ssn": "123-123-123",
+  "gender": "female",
+  "occupation": "Programmer"
+}

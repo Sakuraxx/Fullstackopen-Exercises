@@ -1,8 +1,9 @@
 import patientsData from '../../data/patients';
-import { Patient, NonSensitivePatient, NewPatient } from '../types/Patient';
+import { Patient, NonSensitivePatient, NewPatient, patientSchema } from '../types/Patient';
 import { v1 as uuid } from 'uuid';
+import z from 'zod'
 
-const patients: Patient[]  = patientsData;
+const patients: Patient[]  = z.array(patientSchema).parse(patientsData);
 
 const getPatientEntries = (): Patient[] => {
   return patients;

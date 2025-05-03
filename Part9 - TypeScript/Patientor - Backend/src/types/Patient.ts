@@ -1,15 +1,12 @@
-export interface Patient {
-  id: string,
-  name: string,
-  dateOfBirth: string,
-  ssn: string,
-  gender: string
-  occupation: string
-}
+import z from 'zod';
 
 export type NonSensitivePatient = Omit<Patient, 'ssn'>;
 
-export type NewPatient = Omit<Patient, 'id'>;
+export type NewPatient = z.infer<typeof newPatinetEntrySchema>; 
+
+export interface Patient extends NewPatient {
+  id:string;
+}
 
 export enum Gender {
   Female = 'female',
@@ -17,6 +14,25 @@ export enum Gender {
   Other = 'other'
 }
 
+export const newPatinetEntrySchema = z.object({
+  name: z.string(),
+  dateOfBirth: z.string().date(),
+  ssn: z.string(),
+  gender: z.nativeEnum(Gender),
+  occupation: z.string()
+});
+
+
+export const patientSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  dateOfBirth: z.string().date(),
+  ssn: z.string(),
+  gender: z.nativeEnum(Gender),
+  occupation: z.string()
+});
+
+/*
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
 }
@@ -68,3 +84,4 @@ export const parseGender = (gender: unknown): Gender => {
   }
   return gender;
 }
+*/ 
