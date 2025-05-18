@@ -1,11 +1,15 @@
 import z from 'zod';
 
-export type NonSensitivePatient = Omit<Patient, 'ssn'>;
+export type NonSensitivePatient = Omit<Patient, 'ssn' | 'entries'>;
 
 export type NewPatient = z.infer<typeof newPatinetEntrySchema>; 
 
 export interface Patient extends NewPatient {
   id:string;
+  entries: Entry[];
+}
+
+export interface Entry {
 }
 
 export enum Gender {
@@ -19,17 +23,22 @@ export const newPatinetEntrySchema = z.object({
   dateOfBirth: z.string().date(),
   ssn: z.string(),
   gender: z.nativeEnum(Gender),
-  occupation: z.string()
+  occupation: z.string(),
+  entries: z.array(z.object({})).default([])
 });
 
 
 export const patientSchema = z.object({
   id: z.string(),
   name: z.string(),
-  dateOfBirth: z.string().date(),
+  dateOfBirth: z.string().refine(
+    (date) => !isNaN(Date.parse(date)),
+    { message: "Invalid date format" }
+  ),
   ssn: z.string(),
   gender: z.nativeEnum(Gender),
-  occupation: z.string()
+  occupation: z.string(),
+  entries: z.array(z.object({})).default([])
 });
 
 /*

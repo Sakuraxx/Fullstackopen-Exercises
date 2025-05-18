@@ -18,6 +18,25 @@ router.get('/', (_req: Request, res: Response) => {
   }
 });
 
+router.get('/:id', (req: Request, res: Response) => { 
+  const { id } = req.params; 
+  try {
+    const patient = patientService.getPatientById(id);
+
+    if (patient) {
+      res.json(patient); 
+    } else {
+      res.status(404).send({ error: 'Patient not found' });
+    }
+  } catch (error) {
+    let errorMessage = `Something went wrong while fetching patient with ID ${id}.`;
+    if (error instanceof Error) {
+      errorMessage += ' Error: ' + error.message;
+    }
+    res.status(500).send(errorMessage);
+  }
+});
+
 const newPatientParser = (req: Request, _res: Response, next: NextFunction) => { 
   try {
     newPatinetEntrySchema.parse(req.body)
