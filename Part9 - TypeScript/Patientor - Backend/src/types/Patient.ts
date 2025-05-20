@@ -1,6 +1,13 @@
 import z from 'zod';
+import { Diagnosis } from './Diagnosis';
 
 export type NonSensitivePatient = Omit<Patient, 'ssn' | 'entries'>;
+
+// // Define special omit for unions
+// type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+
+// // Define Entry without the 'id' property
+// type EntryWithoutId = UnionOmit<Entry, 'id'>;
 
 export type NewPatient = z.infer<typeof newPatinetEntrySchema>; 
 
@@ -9,8 +16,52 @@ export interface Patient extends NewPatient {
   entries: Entry[];
 }
 
-export interface Entry {
+// region Entry
+interface BaseEntry {
+  id: string;
+  description: string;
+  date: string;
+  specialist: string;
+
+  diagnosisCodes?: Array<Diagnosis['code']>;
 }
+
+export enum HealthCheckRating {
+  "Healthy" = 0,
+  "LowRisk" = 1,
+  "HighRisk" = 2,
+  "CriticalRisk" = 3
+}
+
+interface HealthCheckEntry extends BaseEntry {
+  type: "HealthCheck";
+  healthCheckRating: HealthCheckRating;
+}
+
+interface OccupationalHealthcareEntry extends BaseEntry {
+  type: "OccupationalHealthcare";
+  employerName: string;
+  sickLeave?: {
+    startDate: string;
+    endDate: string;
+  }
+}
+
+interface HospitalEntry extends BaseEntry {
+  type: "Hospital";
+  discharge: {
+    date: string;
+    criteria: string;
+  }
+}
+
+export type Entry =
+  | HospitalEntry
+  | OccupationalHealthcareEntry
+  | HealthCheckEntry;
+
+
+// endRegion Entry
 
 export enum Gender {
   Female = 'female',
@@ -18,15 +69,33 @@ export enum Gender {
   Other = 'other'
 }
 
+export const entrySchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  date: z.string().date(),
+  specialist: z.string(),
+  diagnosisCodes: z.array(z.string()).optional(),
+  type: z.enum(['HealthCheck', 'OccupationalHealthcare', 'Hospital']),
+  healthCheckRating: z.nativeEnum(HealthCheckRating).optional(),
+  employerName: z.string().optional(),
+  sickLeave: z.object({
+    startDate: z.string().date(),
+    endDate: z.string().date()
+  }).optional(),
+  discharge: z.object({
+    date: z.string().date(),
+    criteria: z.string()
+  }).optional()
+});
+
 export const newPatinetEntrySchema = z.object({
   name: z.string(),
   dateOfBirth: z.string().date(),
   ssn: z.string(),
   gender: z.nativeEnum(Gender),
   occupation: z.string(),
-  entries: z.array(z.object({})).default([])
+  entries: z.array(entrySchema).default([]),
 });
-
 
 export const patientSchema = z.object({
   id: z.string(),
@@ -38,7 +107,7 @@ export const patientSchema = z.object({
   ssn: z.string(),
   gender: z.nativeEnum(Gender),
   occupation: z.string(),
-  entries: z.array(z.object({})).default([])
+  entries: z.array(entrySchema).default([])
 });
 
 /*

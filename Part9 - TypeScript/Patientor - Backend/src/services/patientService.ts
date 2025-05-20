@@ -1,9 +1,9 @@
-import patientsData from '../../data/patients';
-import { Patient, NonSensitivePatient, NewPatient, patientSchema } from '../types/Patient';
+import { Patient, NonSensitivePatient, NewPatient, Entry } from '../types/Patient';
 import { v1 as uuid } from 'uuid';
-import z from 'zod'
+import patientNewData from '../../data/patients-full';
 
-const patients: Patient[]  = z.array(patientSchema).parse(patientsData);
+// const patients: Patient[]  = z.array(patientSchema).parse(patientsData);
+const patients: Patient[]  = patientNewData;
 
 const getPatientEntries = (): Patient[] => {
   return patients;
@@ -27,11 +27,25 @@ const getPatientById = (id: string): Patient | undefined => {
   return patient;
 }
 
-const addPatient = (entry: NewPatient): NonSensitivePatient => {
+const addPatient = (newPatientData: NewPatient): NonSensitivePatient => {
+  
+  const patientEntries: Entry[] = (newPatientData.entries ?? []).map((entryWithoutId) => {
+    return {
+      ...entryWithoutId,
+      id: uuid(),
+    } as Entry;
+  });
+  
   const newPatient: Patient = {
     id: uuid(),
-    ...entry,
+    name: newPatientData.name,
+    ssn: newPatientData.ssn,
+    occupation: newPatientData.occupation,
+    gender: newPatientData.gender,
+    dateOfBirth: newPatientData.dateOfBirth,
+    entries: patientEntries 
   }
+
   patients.push(newPatient);
 
   return {
