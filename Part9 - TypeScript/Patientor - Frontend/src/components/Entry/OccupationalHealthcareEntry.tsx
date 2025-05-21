@@ -1,10 +1,11 @@
 import React from 'react';
 import { OccupationalHealthcareEntry, Diagnosis } from '../../types';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 
 const OccupationalHealthcareEntryComp: React.FC<{entry: OccupationalHealthcareEntry, diagnoses: Diagnosis[]}> = ({ entry, diagnoses }) => {
     return (
         <div>
-            <h3>{entry.date} <i className="fas fa-user-md"></i></h3>
+            <h3>{entry.date}<BusinessCenterIcon/></h3>
             <p>{entry.description}</p>
             {entry.employerName && <p>Employer: {entry.employerName}</p>}
             {entry.sickLeave && (
