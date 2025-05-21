@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
 import { Container, Typography, Box, Button, CircularProgress } from '@mui/material';
@@ -6,10 +6,14 @@ import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender'; 
 
-import { Patient, Gender } from '../../types';
+import { Patient, Gender, Diagnosis } from '../../types';
 import patientService from '../../services/patients';
 
-const PatientDetailPage: React.FC = () => {
+interface Props {
+  diagnoses : Diagnosis[]
+}
+
+const PatientDetailPage = ({diagnoses}: Props) => {
   const { id } = useParams<{ id: string }>(); 
   const [patient, setPatient] = useState<Patient | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -104,7 +108,12 @@ const PatientDetailPage: React.FC = () => {
               {entry.diagnosisCodes && (
                 <ul>
                   {entry.diagnosisCodes.map(code => (
-                    <li key={code}>{code}</li>
+                    <li key={code}>
+                      {code} {diagnoses.find(d => d.code === code)?.name}
+                      {/* {diagnoses.find(d => d.code === code)?.latin && (
+                        <span> ({diagnoses.find(d => d.code === code)?.latin})</span>
+                      )} */}
+                    </li>
                   ))}
                 </ul>
               )}
