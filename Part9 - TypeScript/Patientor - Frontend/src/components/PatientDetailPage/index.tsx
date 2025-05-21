@@ -90,6 +90,28 @@ const PatientDetailPage: React.FC = () => {
           occupation: {patient.occupation}
         </Typography>
       </Box>
+
+      {patient.entries && patient.entries.length > 0 && (
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" component="h3" gutterBottom>
+            Entries
+          </Typography>
+          {patient.entries?.map(entry => (
+            <Box key={entry.id} sx={{ mb: 2, p: 2, border: '1px solid #ccc', borderRadius: '4px' }}>
+              <Typography variant="body1">
+                {entry.date} - {entry.description}
+              </Typography>
+              {entry.diagnosisCodes && (
+                <ul>
+                  {entry.diagnosisCodes.map(code => (
+                    <li key={code}>{code}</li>
+                  ))}
+                </ul>
+              )}
+            </Box>
+          ))}
+        </Box>
+      )}
     </Container>
   );
 };
