@@ -8,6 +8,7 @@ import TransgenderIcon from '@mui/icons-material/Transgender';
 
 import { Patient, Gender, Diagnosis } from '../../types';
 import patientService from '../../services/patients';
+import EntryDetails from '../Entry/EntryDetails';
 
 interface Props {
   diagnoses : Diagnosis[]
@@ -101,23 +102,7 @@ const PatientDetailPage = ({diagnoses}: Props) => {
             Entries
           </Typography>
           {patient.entries?.map(entry => (
-            <Box key={entry.id} sx={{ mb: 2, p: 2, border: '1px solid #ccc', borderRadius: '4px' }}>
-              <Typography variant="body1">
-                {entry.date} - {entry.description}
-              </Typography>
-              {entry.diagnosisCodes && (
-                <ul>
-                  {entry.diagnosisCodes.map(code => (
-                    <li key={code}>
-                      {code} {diagnoses.find(d => d.code === code)?.name}
-                      {/* {diagnoses.find(d => d.code === code)?.latin && (
-                        <span> ({diagnoses.find(d => d.code === code)?.latin})</span>
-                      )} */}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Box>
+            <EntryDetails key={entry.id} entry={entry}  diagnoses={diagnoses}/>
           ))}
         </Box>
       )}
