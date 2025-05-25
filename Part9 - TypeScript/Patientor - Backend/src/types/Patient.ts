@@ -110,6 +110,11 @@ export const patientSchema = z.object({
   entries: z.array(entrySchema).default([])
 });
 
+
+export const newEntrySchema = entrySchema.omit({ id: true });
+
+export type NewEntry = z.infer<typeof newEntrySchema>;
+
 /*
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;

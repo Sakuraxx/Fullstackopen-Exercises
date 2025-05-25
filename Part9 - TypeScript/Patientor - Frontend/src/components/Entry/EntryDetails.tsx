@@ -18,7 +18,7 @@ const EntryDetails: React.FC<{ entry: Entry, diagnoses: Diagnosis[] }> = ({ entr
 };
 
 function assertNever(entry: never): React.ReactNode {
-    throw new Error('Function not implemented.');
+    throw new Error('Function not implemented. Entry type not recognized: ' + entry);
 }
 
 export default EntryDetails;

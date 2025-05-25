@@ -1,0 +1,54 @@
+### Test Variables (Optional, but good for organization)
+@host = http://localhost:3001
+@patientId = d2773336-f723-11e9-8f0b-362b9e155667
+# @patientId = your_actual_patient_id_here # Or pick another ID
+
+### --------------------------------------------
+### Add a new "HealthCheck" Entry for a Patient
+### --------------------------------------------
+POST {{host}}/api/patients/{{patientId}}/entries
+Content-Type: application/json
+
+{
+  "description": "Annual physical examination",
+  "date": "2024-08-01",
+  "specialist": "Dr. Welby",
+  "type": "HealthCheck",
+  "healthCheckRating": 0,
+  "diagnosisCodes": ["Z00.0"]
+}
+
+### ---------------------------------------------------
+### Add a new "OccupationalHealthcare" Entry for a Patient
+### ---------------------------------------------------
+POST {{host}}/api/patients/{{patientId}}/entries
+Content-Type: application/json
+
+{
+  "description": "Work-related stress assessment",
+  "date": "2024-07-30",
+  "specialist": "Dr. OccuHealth",
+  "type": "OccupationalHealthcare",
+  "employerName": "Tech Solutions Inc.",
+  "sickLeave": {
+    "startDate": "2024-07-31",
+    "endDate": "2024-08-02"
+  }
+}
+
+### --------------------------------------------
+### Add a new "Hospital" Entry for a Patient
+### --------------------------------------------
+POST {{host}}/api/patients/{{patientId}}/entries
+Content-Type: application/json
+
+{
+  "description": "Emergency room visit for sprained ankle",
+  "date": "2024-07-25",
+  "specialist": "Dr. Bones",
+  "type": "Hospital",
+  "discharge": {
+    "date": "2024-07-25",
+    "criteria": "Patient stable, pain managed. Follow up with GP."
+  }
+}

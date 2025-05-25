@@ -1,4 +1,4 @@
-import { Patient, NonSensitivePatient, NewPatient, Entry } from '../types/Patient';
+import { Patient, NonSensitivePatient, NewPatient, Entry, NewEntry } from '../types/Patient';
 import { v1 as uuid } from 'uuid';
 import patientNewData from '../../data/patients-full';
 
@@ -57,9 +57,32 @@ const addPatient = (newPatientData: NewPatient): NonSensitivePatient => {
         };
 }
 
+const addEntryToPatient = (patientId: string, newEntryData: NewEntry): Entry | undefined => {
+  const patient = getPatientById(patientId);
+
+  if (!patient) {
+    return undefined;
+  }
+
+  const entryToAdd: Entry = {
+    ...newEntryData,
+    id: uuid(), 
+  } as Entry; // Type assertion to Entry
+
+  // Add the new entry to the patient's entries array
+  // Ensure patient.entries is initialized if it might be undefined/null
+  if (!patient.entries) {
+    patient.entries = [];
+  }
+  patient.entries.push(entryToAdd);
+
+  return entryToAdd; 
+};
+
 export default {
   getPatientEntries,
   getNonSensitivePatinets,
   addPatient,
-  getPatientById
+  getPatientById,
+  addEntryToPatient
 }
