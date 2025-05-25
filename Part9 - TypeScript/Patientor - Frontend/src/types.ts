@@ -44,7 +44,14 @@ export type Entry =
 
 export type NewHealthCheckEntryValues = Omit<HealthCheckEntry, 'id'>;
 
-export type NewEntry = Omit<HealthCheckEntry, 'id'> | Omit<OccupationalHealthcareEntry, 'id'> | Omit<HospitalEntry, 'id'>;
+export type NewOccupationalHealthcareEntryValues = Omit<OccupationalHealthcareEntry, 'id'>;
+
+export type NewHospitalEntryValues = Omit<HospitalEntry, 'id'>;
+
+export type NewEntry =
+  | NewHealthCheckEntryValues
+  | NewOccupationalHealthcareEntryValues
+  | NewHospitalEntryValues;
 
 // endRegion Entry
 

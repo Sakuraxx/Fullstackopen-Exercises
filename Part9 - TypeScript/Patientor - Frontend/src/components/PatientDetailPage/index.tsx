@@ -1,28 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
-import { Container, Typography, Box, Button, CircularProgress, Alert, Divider } from '@mui/material';
-import MaleIcon from '@mui/icons-material/Male';
-import FemaleIcon from '@mui/icons-material/Female';
-import TransgenderIcon from '@mui/icons-material/Transgender';
-
-import { Patient, Gender, Diagnosis, NewHealthCheckEntryValues } from '../../types'; 
-import AddHealthCheckEntryForm from '../Entry/AddEntryForm';
-import EntryDetails from '../Entry/EntryDetails';
+import { Container, Typography, Box, Button, CircularProgress, Alert, Divider, Stack } from '@mui/material'; // Added Stack
+import {
+  Patient,
+  Gender,
+  Diagnosis,
+  NewEntry, // General NewEntry type
+  NewHealthCheckEntryValues,
+  NewOccupationalHealthcareEntryValues,
+  NewHospitalEntryValues,
+} from '../../types';
 import patientService from '../../services/patients';
+import AddHealthCheckEntryForm from '../Entry/AddEntryForm';
+import AddOccupationalHealthcareEntryForm from '../Entry/AddOccupationalHealthcareEntryForm';
+import AddHospitalEntryForm from '../Entry/AddHospitalEntryForm';
+import EntryDetails from '../Entry/EntryDetails';
 
 interface Props {
   diagnoses: Diagnosis[];
 }
+
+type FormType = "HealthCheck" | "OccupationalHealthcare" | "Hospital" | null;
 
 const PatientDetailPage = ({ diagnoses }: Props) => {
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = useState<Patient | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [showAddEntryForm, setShowAddEntryForm] = useState<boolean>(false); // State to toggle form
-  const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
-
+  const [activeForm, setActiveForm] = useState<FormType>(null); // State to manage which form is active
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -43,14 +50,14 @@ const PatientDetailPage = ({ diagnoses }: Props) => {
         setLoading(false);
       }
     };
-
+    
     void fetchPatient();
   }, [id]);
 
-  const handleAddEntry = async (values: NewHealthCheckEntryValues) => {
+  const handleAddEntrySubmit = async (values: NewEntry) => { // Use general NewEntry type
     if (!id) {
       console.error("Patient ID is missing");
-      setNotification({message: "Patient ID is missing. Cannot add entry.", type: 'error'});
+      setNotification({ message: "Patient ID is missing. Cannot add entry.", type: 'error' });
       return;
     }
     try {
@@ -59,50 +66,49 @@ const PatientDetailPage = ({ diagnoses }: Props) => {
         if (!prevPatient) return null;
         return {
           ...prevPatient,
-          entries: prevPatient.entries ? [...prevPatient.entries, newEntry] : [newEntry]
+          entries: prevPatient.entries ? [...prevPatient.entries, newEntry] : [newEntry],
         };
       });
-      setShowAddEntryForm(false); // Hide form on successful submission
-      setNotification({message: "New entry added successfully!", type: 'success'});
-      setTimeout(() => setNotification(null), 5000); // Clear notification after 5s
+      setActiveForm(null); // Hide form on successful submission
+      setNotification({ message: "New entry added successfully!", type: 'success' });
+      setTimeout(() => setNotification(null), 5000);
     } catch (e: any) {
       console.error("Failed to add entry:", e);
       const errorMessage = e.response?.data?.error || e.response?.data?.issues?.map((issue: { path: string[], message: string}) => `${issue.path.join('.')}: ${issue.message}`).join('; ') || e.message || "An unknown error occurred while adding the entry.";
-      setNotification({message: `Error: ${errorMessage}`, type: 'error'});
-      throw e;
+      setNotification({ message: `Error: ${errorMessage}`, type: 'error' });
+      throw e; // Re-throw for form-level error display
     }
   };
 
-  if (loading) {
-    return <Container><CircularProgress /></Container>;
-  }
+  const handleCancelForm = () => {
+    setActiveForm(null);
+    setNotification(null);
+  };
 
-  if (error && !patient) { // Show main error only if patient data couldn't be loaded
-    return <Container><Alert severity="error">{error}</Alert></Container>;
-  }
 
-  if (!patient) {
-    return <Container><Typography>Patient not found.</Typography></Container>;
-  }
+  if (loading) return <Container><CircularProgress /></Container>;
+  if (error && !patient) return <Container><Alert severity="error">{error}</Alert></Container>;
+  if (!patient) return <Container><Typography>Patient not found.</Typography></Container>;
 
   const getGenderIcon = (gender: Gender) => {
     switch (gender) {
-      case Gender.Male: return <MaleIcon />;
-      case Gender.Female: return <FemaleIcon />;
-      case Gender.Other: return <TransgenderIcon />;
-      default: return null;
+      case Gender.Male:
+        return <span role="img" aria-label="male">♂️</span>;
+      case Gender.Female:
+        return <span role="img" aria-label="female">♀️</span>;
+      case Gender.Other:
+        return <span role="img" aria-label="other">⚧️</span>;
+      default:
+        return null;
     }
   };
 
   return (
     <Container>
-      <Box sx={{ my: 2 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          Patientor
-        </Typography>
-        <Button variant="contained" component={RouterLink} to="/" sx={{ mb: 2 }}>
-          HOME
-        </Button>
+      {/* ... Patient Header and Info ... same as before ... */}
+       <Box sx={{ my: 2 }}>
+        <Typography variant="h3" component="h1" gutterBottom>Patientor</Typography>
+        <Button variant="contained" component={RouterLink} to="/" sx={{ mb: 2 }}>HOME</Button>
       </Box>
 
       <Box sx={{ mb: 3, p: 2, border: '1px solid lightgrey', borderRadius: '4px' }}>
@@ -114,45 +120,55 @@ const PatientDetailPage = ({ diagnoses }: Props) => {
         <Typography variant="body1">date of birth: {patient.dateOfBirth || 'N/A'}</Typography>
       </Box>
 
-      {/* Notification Area */}
+
       {notification && (
         <Alert severity={notification.type} sx={{ mb: 2 }} onClose={() => setNotification(null)}>
           {notification.message}
         </Alert>
       )}
 
+      {/* Buttons to show different forms */}
+      {!activeForm && (
+        <Stack direction="row" spacing={2} sx={{ my: 2 }}>
+          <Button variant="outlined" onClick={() => { setActiveForm("HealthCheck"); setNotification(null);}}>
+            Add HealthCheck Entry
+          </Button>
+          <Button variant="outlined" onClick={() => { setActiveForm("OccupationalHealthcare"); setNotification(null);}}>
+            Add Occupational Entry
+          </Button>
+          <Button variant="outlined" onClick={() => { setActiveForm("Hospital"); setNotification(null);}}>
+            Add Hospital Entry
+          </Button>
+        </Stack>
+      )}
 
-      {/* Toggle button and Add Entry Form */}
-      {showAddEntryForm ? (
+      {/* Render the active form */}
+      {activeForm === "HealthCheck" && (
         <AddHealthCheckEntryForm
-          onCancel={() => {
-            setShowAddEntryForm(false);
-            setNotification(null); // Clear any form-specific error if cancelling
-            }
-          }
-          onSubmit={handleAddEntry}
+          onCancel={handleCancelForm}
+          onSubmit={handleAddEntrySubmit as (values: NewHealthCheckEntryValues) => Promise<void>} // Cast for specific form
           diagnoses={diagnoses}
         />
-      ) : (
-        <Button
-          variant="outlined"
-          onClick={() => {
-            setShowAddEntryForm(true);
-            setNotification(null); // Clear previous notifications
-            }
-          }
-          sx={{ my: 2 }}
-        >
-          Add New HealthCheck Entry
-        </Button>
+      )}
+      {activeForm === "OccupationalHealthcare" && (
+        <AddOccupationalHealthcareEntryForm
+          onCancel={handleCancelForm}
+          onSubmit={handleAddEntrySubmit as (values: NewOccupationalHealthcareEntryValues) => Promise<void>} // Cast
+          diagnoses={diagnoses}
+        />
+      )}
+      {activeForm === "Hospital" && (
+        <AddHospitalEntryForm
+          onCancel={handleCancelForm}
+          onSubmit={handleAddEntrySubmit as (values: NewHospitalEntryValues) => Promise<void>} // Cast
+          diagnoses={diagnoses}
+        />
       )}
 
       <Divider sx={{ my: 3 }} />
 
       <Box sx={{ mt: 2 }}>
-        <Typography variant="h5" component="h3" gutterBottom>
-          Entries
-        </Typography>
+        <Typography variant="h5" component="h3" gutterBottom>Entries</Typography>
         {patient.entries && patient.entries.length > 0 ? (
           patient.entries.map(entry => (
             <EntryDetails key={entry.id} entry={entry} diagnoses={diagnoses} />
